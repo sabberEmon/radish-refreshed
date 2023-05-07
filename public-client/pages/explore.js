@@ -96,7 +96,7 @@ export default function Explore({ collections }) {
 }
 
 // fetch data from api
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
   const response = await axios.get(
     `${process.env.API_BASE_URL}/api/collection`
   );

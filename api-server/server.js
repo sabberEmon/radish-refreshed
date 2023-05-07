@@ -10,6 +10,7 @@ const cors = require("cors");
 const http = require("http");
 const app = express();
 const httpServer = http.createServer(app);
+const cookieParser = require("cookie-parser");
 // const { Server } = require("socket.io");
 // const io = new Server(httpServer, {
 //   cors: {
@@ -24,9 +25,10 @@ const nftRouter = require("./routes/nft.route");
 
 // cors
 app.use(
-  cors({
-    origin: [process.env.CLIENT_URL, process.env.ADMIN_URL],
-  })
+  // cors({
+  //   origin: [process.env.CLIENT_URL, process.env.ADMIN_URL],
+  // })
+  cors()
 );
 // logging middleware
 app.use(morgan("dev", {}));
@@ -43,6 +45,7 @@ app.use(
   })
 );
 
+app.use(cookieParser());
 app.use(bodyParser.json({ limit: "100000mb" }));
 app.use(bodyParser.urlencoded({ limit: "100000mb", extended: true }));
 

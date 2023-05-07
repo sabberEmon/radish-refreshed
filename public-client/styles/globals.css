@@ -74,7 +74,7 @@
 /* scrollbar  */
 /* width */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 /* Track */
@@ -84,13 +84,13 @@
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #979797;
-  /* border-radius: 5px; */
+  background: #c2c2c2;
+  border-radius: 25px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #de345e;
+  background: #979797;
 }
 
 /* input style */

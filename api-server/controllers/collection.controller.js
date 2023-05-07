@@ -44,6 +44,8 @@ exports.createCollection = async (req, res) => {
 };
 
 exports.getCollections = async (req, res) => {
+  console.log(req.cookies);
+
   try {
     const collections = await Collection.find({}).populate("creator", [
       "name",

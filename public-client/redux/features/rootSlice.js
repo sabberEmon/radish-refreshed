@@ -2,13 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   socket: null,
-  notifications: [],
-  isNotificationOpen: false,
   user: null,
   theme: undefined,
-  actionWallet: null,
-  walletType: null,
-  isWalletOpen: false,
+  isLoginModalOpen: false,
+  isCartOpen: false,
 };
 
 export const rootSlice = createSlice({
@@ -18,39 +15,31 @@ export const rootSlice = createSlice({
     setSocket: (state, action) => {
       state.socket = action.payload;
     },
-    toggleNotification: (state) => {
-      state.isNotificationOpen = !state.isNotificationOpen;
-    },
-    closeNotification: (state) => {
-      state.isNotificationOpen = false;
-    },
     setUser: (state, action) => {
       state.user = action.payload;
     },
     toggleTheme: (state, action) => {
       state.theme = action.payload;
     },
-    setActionWallet: (state, action) => {
-      state.actionWallet = action.payload;
+    setIsLoginModalOpen: (state, action) => {
+      state.isLoginModalOpen = action.payload;
     },
-    setIsWalletOpen: (state, action) => {
-      state.isWalletOpen = action.payload;
+    logout: (state) => {
+      state.user = null;
     },
-    setWalletType: (state, action) => {
-      state.walletType = action.payload;
+    setIsCartOpen: (state, action) => {
+      state.isCartOpen = action.payload;
     },
   },
 });
 
 export const {
   setSocket,
-  toggleNotification,
   setUser,
   toggleTheme,
-  setActionWallet,
-  setIsWalletOpen,
-  setWalletType,
-  closeNotification,
+  setIsLoginModalOpen,
+  logout,
+  setIsCartOpen,
 } = rootSlice.actions;
 
 export default rootSlice.reducer;

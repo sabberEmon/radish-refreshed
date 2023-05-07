@@ -4,6 +4,8 @@ exports.fetchNftsWithFilters = async (req, res) => {
   const { page = 1, limit = 20 } = req.query;
   const { filters, sortBy, primaryFilters } = req.body;
 
+  console.log(req.cookies);
+
   try {
     // fetch nfts with filters
     const nfts = await Nft.find(
@@ -54,7 +56,8 @@ exports.fetchNftsWithFilters = async (req, res) => {
     res.status(200).json({
       success: true,
       nfts,
-      totalPages: Math.ceil(count / limit),
+      count,
+      hasMore: page * limit < count,
       currentPage: page,
     });
   } catch (error) {

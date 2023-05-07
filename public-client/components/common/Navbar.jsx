@@ -1,6 +1,6 @@
 import { Avatar, Badge, Button, Drawer, Dropdown, Popconfirm } from "antd";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { useTheme } from "next-themes";
 import {
@@ -23,6 +23,7 @@ export default function Navbar() {
   const root = useSelector((state) => state.root);
   const { theme, setTheme } = useTheme();
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const { ref, isComponentVisible, setIsComponentVisible } =
     useComponentVisible(false);
@@ -196,22 +197,17 @@ export default function Navbar() {
               )}
             </Button>
 
-            <Dropdown
-              menu={{
-                items: avatarDropdownItems,
-                onClick: (e) => {},
-              }}
-              trigger={["click"]}
-              overlayStyle={{
-                marginTop: "14px",
-              }}
-              placement=""
-              open={isProfileNavVisible}
-              onOpenChange={(open) => {
-                setIsProfileNavVisible(open);
-              }}
-            >
-              <div className="h-[41px] w-[41px] flex justify-center items-center rounded-full ml-2 cursor-pointer">
+            {/* profile */}
+            {!root.user ? (
+              <div
+                className="h-[41px] w-[41px] flex justify-center items-center rounded-full ml-2 cursor-pointer"
+                onClick={() => {
+                  dispatch({
+                    type: "root/setIsLoginModalOpen",
+                    payload: true,
+                  });
+                }}
+              >
                 <Avatar
                   size={40}
                   // src={""}
@@ -219,7 +215,32 @@ export default function Navbar() {
                   className=""
                 />
               </div>
-            </Dropdown>
+            ) : (
+              <Dropdown
+                menu={{
+                  items: avatarDropdownItems,
+                  onClick: (e) => {},
+                }}
+                trigger={["click"]}
+                overlayStyle={{
+                  marginTop: "14px",
+                }}
+                placement=""
+                open={isProfileNavVisible}
+                onOpenChange={(open) => {
+                  setIsProfileNavVisible(open);
+                }}
+              >
+                <div className="h-[41px] w-[41px] flex justify-center items-center rounded-full ml-2 cursor-pointer">
+                  <Avatar
+                    size={40}
+                    // src={""}
+                    icon={<MdPersonOutline />}
+                    className=""
+                  />
+                </div>
+              </Dropdown>
+            )}
           </div>
         </section>
 

@@ -9,9 +9,15 @@ import { Button } from "antd";
 import { MdOutlineShare } from "react-icons/md";
 import CollectionMain from "@/components/collection/CollectionMain";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 export default function Collection({ collection }) {
   // console.log(collection);
+  const router = useRouter();
+
+  const { collectionIdentifier } = router.query;
+
+  // console.log(collectionIdentifier);
 
   return (
     <>
@@ -165,7 +171,10 @@ export default function Collection({ collection }) {
             </div>
           </section>
 
-          <CollectionMain possibleTraitTypes={collection.possibleTraitTypes} />
+          <CollectionMain
+            possibleTraitTypes={collection.possibleTraitTypes}
+            collectionIdentifier={collectionIdentifier}
+          />
         </main>
       </Container>
     </>
