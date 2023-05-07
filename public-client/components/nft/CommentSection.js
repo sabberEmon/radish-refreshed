@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 
 export default function CommentSection({ users, nft, owner, collection }) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const root = useSelector((state) => state.root);
+  const root = useSelector((state) => state.main.root);
 
   const [inputValue, setInputValue] = useState("");
   const [tagOptions, setTagOptions] = useState([]);

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "next-themes";
 
 export default function Wrapper({ children }) {
-  const root = useSelector((state) => state.root);
+  const root = useSelector((state) => state.main.root);
   const { theme } = useTheme();
   const dispatch = useDispatch();
 

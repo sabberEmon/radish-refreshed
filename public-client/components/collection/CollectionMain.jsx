@@ -1,17 +1,27 @@
 import { Button, Drawer } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsFilter } from "react-icons/bs";
 import { MdOutlineSearch } from "react-icons/md";
 import CollectionListNfts from "./CollectionListNfts";
 import Filters from "./Filters";
 import Select from "../utils/Select";
 import FilterValues from "./FilterValues";
-import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
-import SingleNft from "../common/SingleNft";
+import { useDispatch, useSelector } from "react-redux";
+import { useInView } from "react-intersection-observer";
 
 function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const collection = useSelector((state) => state.main.collection);
+  const dispatch = useDispatch();
+  const {
+    ref: infinityRef,
+    inView,
+    entry,
+  } = useInView({
+    rootMargin: "0px 0px 100px 0px",
+  });
+
+  const [loading, setLoading] = useState(true);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [sortOne, setSortOne] = useState({
@@ -23,17 +33,11 @@ function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
     value: "availableToBuy",
   });
 
-  const [nfts, setNfts] = useState([]);
-  const [filters, setFilters] = useState([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(null);
-  const [count, setCount] = useState(null);
-
-  const fetchMoreData = async () => {
+  const fetchMoreData = async (page, filters) => {
     const res = await axios.post(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/nft/with-filters?page=${page}`,
       {
-        filters: filters,
+        filters,
         primaryFilters: {
           collectionIdentifier: collectionIdentifier,
           // price not equal to null in mongoose
@@ -46,14 +50,25 @@ function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
     );
 
     // console.log(res.data);
-    // merge new nfts with old nfts
-    setNfts((prev) => [...prev, ...res.data?.nfts]);
-    setHasMore(res.data?.hasMore);
-    setCount(res.data?.count);
-    setPage((prev) => prev + 1);
+    dispatch({
+      type: "collection/apendNfts",
+      payload: res.data?.nfts,
+    });
+    setLoading(false);
   };
 
-  fetchMoreData();
+  useEffect(() => {
+    if (inView) {
+      dispatch({
+        type: "collection/incrementPage",
+      });
+    }
+  }, [inView]);
+
+  // call fetchMoreData() when collection.page or collection.filters change
+  useEffect(() => {
+    fetchMoreData(collection.page, collection.filters);
+  }, [collection.page, collection.filters]);
 
   return (
     <section className="xl:px-20 px-4 mt-10">
@@ -63,10 +78,13 @@ function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
             className="md:flex justify-center items-center hidden"
             shape="circle"
             icon={<BsFilter className="h-5 w-5" />}
-            type={filtersOpen ? "primary" : "default"}
+            type={collection.isFiltersOpen ? "primary" : "default"}
             size="large"
             onClick={() => {
-              setFiltersOpen((prev) => !prev);
+              dispatch({
+                type: "collection/setIsFiltersOpen",
+                payload: !collection.isFiltersOpen,
+              });
             }}
           />
 
@@ -137,48 +155,14 @@ function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
 
       <div className="mt-10 min-h-[50vh] md:flex md:gap-x-6">
         {/* filters */}
-        {filtersOpen && (
-          <Filters
-            setFiltersOpen={setFiltersOpen}
-            possibleTraitTypes={possibleTraitTypes}
-            filters={filters}
-            setFilters={setFilters}
-          />
+        {collection.isFiltersOpen && (
+          <Filters possibleTraitTypes={possibleTraitTypes} />
         )}
-        {/* <CollectionListNfts
-          nfts={[1, 2, 3, 4, 5, 6, 7, 8, 9, 0]}
-          filtersOpen={filtersOpen}
-        /> */}
-
-        {/* <InfiniteScroll
-          dataLength={count} //This is important field to render the next data
-          next={fetchMoreData}
-          hasMore={hasMore}
-          loader={<h4>Loading...</h4>}
-          endMessage={
-            <p style={{ textAlign: "center" }}>
-              <b>Yay! You have seen it all</b>
-            </p>
-          }
-          // below props only if you need pull down functionality
-          // refreshFunction={this.refresh}
-          // pullDownToRefresh
-          // pullDownToRefreshThreshold={50}
-          // pullDownToRefreshContent={
-          //   <h3 style={{ textAlign: "center" }}>
-          //     &#8595; Pull down to refresh
-          //   </h3>
-          // }
-          // releaseToRefreshContent={
-          //   <h3 style={{ textAlign: "center" }}>&#8593; Release to refresh</h3>
-          // }
-        >
-          {nfts?.map((nft) => (
-            <div key={nft} className="w-full justify-center items-center flex">
-              <SingleNft />
-            </div>
-          ))}
-        </InfiniteScroll> */}
+        <CollectionListNfts
+          infinityRef={infinityRef}
+          loading={loading && collection.page === 1}
+        />
+        {/* <div ref={infinityRef}></div> */}
       </div>
 
       {/* mobile filters drawer */}
@@ -193,11 +177,7 @@ function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
         title={<p>Filters</p>}
         // className="rounded-t-[24px]"
       >
-        <FilterValues
-          possibleTraitTypes={possibleTraitTypes}
-          filters={filters}
-          setFilters={setFilters}
-        />
+        <FilterValues possibleTraitTypes={possibleTraitTypes} />
       </Drawer>
     </section>
   );

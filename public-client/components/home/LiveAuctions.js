@@ -25,7 +25,7 @@ function getDifferenecInSeconds(date1, date2) {
 export default function LiveAuctions({ auctionsNftsWithOwners }) {
   const { theme, setTheme } = useTheme();
   const router = useRouter();
-  const root = useSelector((state) => state.root);
+  const root = useSelector((state) => state.main.root);
 
   // console.log("diffInSeconds", new Date(auctionsNftsWithOwners[4]?.endDate));
 

@@ -44,7 +44,7 @@ const safelyWrapAmount = (amount) => {
 };
 
 export default function Swap() {
-  const root = useSelector((state) => state.root);
+  const root = useSelector((state) => state.main.root);
 
   const [swapFrom, setSwapFrom] = useState({
     id: "xrd",

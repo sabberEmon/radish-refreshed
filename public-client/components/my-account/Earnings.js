@@ -10,7 +10,6 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import BigNumber from "bignumber.js";
 
-
 const safelyWrapAmount = (amount) => {
   const bigAmount = new BigNumber(amount);
   const amountInput = bigAmount.shiftedBy(-18); // Atto
@@ -19,9 +18,8 @@ const safelyWrapAmount = (amount) => {
   return amountResult;
 };
 
-
 export default function Earnings() {
-  const root = useSelector((state) => state.root);
+  const root = useSelector((state) => state.main.root);
   const router = useRouter();
   const [walletBalance, setWalletBalance] = useState("");
 

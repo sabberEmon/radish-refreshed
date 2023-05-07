@@ -13,7 +13,7 @@ export default function NftButtons({
   setBidHigherModal,
   handleCancelBid,
 }) {
-  const root = useSelector((state) => state.root);
+  const root = useSelector((state) => state.main.root);
 
   if (root.user && root.user.wallet === nft.ownerWallet) {
     return (

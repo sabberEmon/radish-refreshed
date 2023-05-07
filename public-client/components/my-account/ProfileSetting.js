@@ -21,7 +21,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 
 export default function ProfileSetting({ userDefaults }) {
-  const root = useSelector((state) => state.root);
+  const root = useSelector((state) => state.main.root);
   const { data: usersData } = useGetAllUserNamesQuery();
 
   const router = useRouter();

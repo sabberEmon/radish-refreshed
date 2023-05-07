@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import Footer from "../common/Footer.jsx";
 import Navbar from "../common/Navbar.jsx";
-import { Modal, message } from "antd";
+import { Drawer, Modal, message } from "antd";
 import xidarLogo from "../../images/xidar_logo_rounded.png";
 import z3usLogo from "../../images/z3us_logo_rounded.png";
 import Image from "next/image.js";
@@ -11,7 +11,7 @@ import { useAuthInfoQuery } from "@/redux/features/api/apiSlice.js";
 
 function Container({ children }) {
   const { isError, isLoading } = useAuthInfoQuery();
-  const root = useSelector((state) => state.root);
+  const root = useSelector((state) => state.main.root);
   const dispatch = useDispatch();
 
   // login handler
@@ -145,6 +145,23 @@ function Container({ children }) {
           </p>
         </div>
       </Modal>
+
+      {/* cart drawer */}
+      <Drawer
+        title="Basic Drawer"
+        placement="right"
+        onClose={() => {
+          dispatch({
+            type: "root/setIsCartOpen",
+            payload: false,
+          });
+        }}
+        open={root.isCartOpen}
+      >
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Drawer>
     </>
   );
 }

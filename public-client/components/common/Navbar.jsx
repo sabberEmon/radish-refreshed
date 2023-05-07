@@ -11,6 +11,7 @@ import {
   MdOutlineSettings,
   MdOutlinePermIdentity,
 } from "react-icons/md";
+import { BsCart2 } from "react-icons/bs";
 import { IoNotificationsOutline, IoNotifications } from "react-icons/io5";
 import useComponentVisible from "../utils/useComponentVisible";
 import { ReactComponent as NightIcon } from "../../images/navbar/night.svg";
@@ -20,7 +21,9 @@ import { ReactComponent as NotificationActiveIcon } from "../../images/navbar/no
 import { ReactComponent as RadishLogo } from "../../images/radish.svg";
 
 export default function Navbar() {
-  const root = useSelector((state) => state.root);
+  const root = useSelector((state) => state.main.root);
+  const cart = useSelector((state) => state.main.cart);
+
   const { theme, setTheme } = useTheme();
   const router = useRouter();
   const dispatch = useDispatch();
@@ -175,6 +178,19 @@ export default function Navbar() {
                 }}
               />
             )}
+
+            {/* cart */}
+            <Badge count={cart.items.length} offset={[-22, 5]} size="small">
+              <BsCart2
+                className="w-6 h-6 text-secondaryGray mr-4 cursor-pointer"
+                onClick={() => {
+                  dispatch({
+                    type: "root/setIsCartOpen",
+                    payload: !root.isCartOpen,
+                  });
+                }}
+              />
+            </Badge>
 
             <Button
               type="primary"

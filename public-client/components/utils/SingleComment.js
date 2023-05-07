@@ -22,7 +22,7 @@ export default function SingleComment({
   setTargetComment,
 }) {
   // console.log(comment);
-  const root = useSelector((state) => state.root);
+  const root = useSelector((state) => state.main.root);
   const router = useRouter();
 
   const [replyPage, setReplyPage] = useState(0);

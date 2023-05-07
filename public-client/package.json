@@ -29,8 +29,9 @@
     "react-countdown": "^2.3.5",
     "react-dom": "18.2.0",
     "react-icons": "^4.7.1",
-    "react-infinite-scroll-component": "^6.1.0",
+    "react-intersection-observer": "^9.4.3",
     "react-redux": "^8.0.5",
+    "redux-persist": "^6.0.0",
     "sharp": "^0.31.3",
     "socket.io-client": "^4.5.4",
     "swiper": "8.3.2"

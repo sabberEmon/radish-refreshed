@@ -67,7 +67,7 @@ const getTransactionMessage = (nft) => {
 
 export default function Nft({ nft, collection, similarNfts, owner }) {
   const router = useRouter();
-  const root = useSelector((state) => state.root);
+  const root = useSelector((state) => state.main.root);
   const [filters, setFilters] = useState(["all"]);
 
   // console.log("nft", nft);

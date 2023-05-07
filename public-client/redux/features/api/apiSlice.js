@@ -44,16 +44,7 @@ export const apiSlice = createApi({
         }
       },
     }),
-
-    // Nft
-    fetchNftsWithFilters: builder.mutation({
-      query: ({ page = 1, limit = 20, body }) => ({
-        url: `/api/nft/with-filters?page=${page}&limit=${limit}`,
-        method: "POST",
-        body,
-      }),
-    }),
   }),
 });
 
-export const { useFetchNftsWithFiltersMutation, useAuthInfoQuery } = apiSlice;
+export const { useAuthInfoQuery } = apiSlice;

@@ -18,7 +18,7 @@ import { MdKeyboardArrowLeft } from "react-icons/md";
 import { useSelector } from "react-redux";
 
 export default function Setting({ user }) {
-  const root = useSelector((state) => state.root);
+  const root = useSelector((state) => state.main.root);
   const router = useRouter();
 
   // console.log(session.user.emailVerified)

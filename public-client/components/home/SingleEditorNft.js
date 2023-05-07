@@ -17,7 +17,7 @@ import { Button, Popover } from "antd";
 
 export default function SingleEditorNft({ nft }) {
   const router = useRouter();
-  const root = useSelector((state) => state.root);
+  const root = useSelector((state) => state.main.root);
   const [toggleLike, { isLoading: toggleLikeLoading }] =
     useToggleLikeMutation();
 

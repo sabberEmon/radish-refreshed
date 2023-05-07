@@ -1,11 +1,11 @@
 import { Checkbox, Collapse } from "antd";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
 
-export default function FilterValues({
-  possibleTraitTypes,
-  filters,
-  setFilters,
-}) {
+export default function FilterValues({ possibleTraitTypes }) {
+  const collection = useSelector((state) => state.main.collection);
+  const dispatch = useDispatch();
+
   return (
     <>
       {possibleTraitTypes?.map((traitType, index) => {
@@ -43,46 +43,21 @@ export default function FilterValues({
                       <p className="capitalize text-[#5D5D5B]">{trait}</p>
                       <Checkbox
                         value={trait}
-                        checked={filters
+                        checked={collection.filters
                           .find(
                             (filter) =>
                               filter.trait_type === traitType.trait_type
                           )
                           ?.values.includes(trait)}
                         onChange={(e) => {
-                          const tempFilters = [...filters];
-
-                          const { value } = e.target;
-                          // console.log(value);
-                          const targetedFilter = tempFilters.find(
-                            (filter) =>
-                              filter.trait_type === traitType.trait_type
-                          );
-
-                          if (targetedFilter) {
-                            if (targetedFilter.values.includes(value)) {
-                              targetedFilter.values =
-                                targetedFilter.values.filter(
-                                  (val) => val !== value
-                                );
-                            } else {
-                              targetedFilter.values.push(value);
-                            }
-                          } else {
-                            tempFilters.push({
-                              trait_type: traitType.trait_type,
-                              values: [value],
-                            });
-                          }
-
-                          // remove empty filters
-                          tempFilters.forEach((filter, index) => {
-                            if (filter.values.length === 0) {
-                              tempFilters.splice(index, 1);
-                            }
+                          dispatch({
+                            type: "collection/setFilters",
+                            payload: {
+                              traitType,
+                              e,
+                            },
                           });
 
-                          setFilters(tempFilters);
                           // console.log(tempFilters);
                         }}
                       />
