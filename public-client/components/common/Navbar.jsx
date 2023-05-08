@@ -54,7 +54,12 @@ export default function Navbar() {
       label: (
         <Popconfirm
           title="Are you sure to logout?"
-          onConfirm={() => {}}
+          onConfirm={() => {
+            dispatch({
+              type: "root/logout",
+            });
+            setIsProfileNavVisible(false);
+          }}
           onCancel={() => {
             setIsProfileNavVisible(false);
           }}
@@ -235,11 +240,23 @@ export default function Navbar() {
               <Dropdown
                 menu={{
                   items: avatarDropdownItems,
-                  onClick: (e) => {},
+                  onClick: (e) => {
+                    if (e.key === "3") {
+                      // setIsProfileNavVisible(false);
+                    }
+                    if (e.key === "0") {
+                      router.push("/profile/" + root?.user?._id);
+                      setIsProfileNavVisible(false);
+                    }
+                    if (e.key === "1") {
+                      router.push("/my-account/" + root?.user?._id);
+                      setIsProfileNavVisible(false);
+                    }
+                  },
                 }}
                 trigger={["click"]}
                 overlayStyle={{
-                  marginTop: "14px",
+                  marginTop: "20px",
                 }}
                 placement=""
                 open={isProfileNavVisible}

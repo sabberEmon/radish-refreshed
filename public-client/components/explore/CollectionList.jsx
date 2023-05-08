@@ -1,9 +1,13 @@
 import { Empty } from "antd";
 import Image from "next/image";
+import Link from "next/link";
 
 function Collection({ item }) {
   return (
-    <div className="max-w-[303px] rounded-[16px] border border-solid border-[#030E170F] dark:border-[#696969] pb-3">
+    <Link
+      className="max-w-[303px] rounded-[16px] border border-solid border-[#030E170F] dark:border-[#696969] pb-3"
+      href={`/collection/${item?.collectionIdentifier}`}
+    >
       <div className="relative">
         <Image
           src={item?.collectionBanner}
@@ -28,13 +32,13 @@ function Collection({ item }) {
             item?.title
           }
         </h3>
-        <p className="text-[#666F83] text-[13px] mt-2">
+        <p className="text-[#666F83] text-[13px] mt-3">
           {item?.description.length > 80
             ? item?.description.slice(0, 80) + "..."
             : item?.description}
         </p>
       </div>
-    </div>
+    </Link>
   );
 }
 

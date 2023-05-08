@@ -8,8 +8,9 @@ import banner from "../../images/collection-banner.png";
 import ProfileMain from "@/components/profile/ProfileMain";
 import Container from "@/components/layouts/Container";
 import WalletNumber from "@/components/utils/WalletNumber";
+import axios from "axios";
 
-export default function Profile() {
+export default function Profile({ nfts }) {
   return (
     <>
       <Head>
@@ -30,7 +31,7 @@ export default function Profile() {
             />
 
             {/* Profile Card */}
-            <div className="relative -mt-16 px-20 flex justify-between">
+            <div className="relative -mt-16 px-20 flex justify-between max-w-[1800px] mx-auto">
               <div>
                 <div className="flex justify-start">
                   <div className="w-[112px] h-[112px] rounded-full border-4 border-white border-solid flex justify-center items-center">
@@ -163,11 +164,37 @@ export default function Profile() {
             </div>
           </section>
 
-          <section className="px-20 mt-10">
-            <ProfileMain />
+          <section className="px-20 my-10 max-w-[1800px] mx-auto">
+            <ProfileMain nfts={nfts} />
           </section>
         </main>
       </Container>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  // console.log(context.query.userId);
+  // console.log("user profile");
+  const response = await axios.post(
+    `${process.env.API_BASE_URL}/api/nft/with-filters?page=1`,
+    {
+      filters: [],
+      primaryFilters: {
+        collectionIdentifier: "buff",
+        // price not equal to null in mongoose
+        price: { $ne: null },
+      },
+      sortBy: {
+        price: -1,
+      },
+    }
+  );
+
+  // console.log(response.data);
+  return {
+    props: {
+      nfts: response.data.nfts,
+    },
+  };
 }

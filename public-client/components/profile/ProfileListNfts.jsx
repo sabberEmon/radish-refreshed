@@ -18,9 +18,9 @@ export default function ProfileListNfts({ nfts, tabName }) {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-x-3 gap-y-4 md:gap-y-3 sm:gap-y-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-5 gap-x-3 gap-y-4 md:gap-y-3 sm:gap-y-4">
       {nfts?.map((nft) => (
-        <SingleNft key={nft} />
+        <SingleNft key={nft._id} nft={nft} />
       ))}
     </div>
   );

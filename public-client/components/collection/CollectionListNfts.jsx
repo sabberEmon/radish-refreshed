@@ -36,7 +36,7 @@ export default function CollectionListNfts({ infinityRef, loading }) {
         collection.isFiltersOpen
           ? "xl:grid-cols-3 2xl:grid-cols-4"
           : "xl:grid-cols-4 2xl:grid-cols-5"
-      } gap-x-3 gap-y-4 md:gap-y-3 sm:gap-y-4`}
+      } gap-4 max-w-fit mx-auto`}
     >
       {collection.nfts?.map((nft) => (
         <div key={nft._id} className="w-full justify-center items-center flex">

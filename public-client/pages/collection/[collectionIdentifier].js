@@ -39,7 +39,7 @@ export default function Collection({ collection }) {
             />
 
             {/* collection Card */}
-            <div className="relative -mt-16 xl:px-20 px-4 flex justify-between">
+            <div className="relative -mt-16 xl:px-20 px-4 flex justify-between max-w-[1800px] mx-auto">
               <div>
                 <div className="flex justify-start">
                   <div className="w-[112px] h-[112px] rounded-full border-4 border-white border-solid flex justify-center items-center">
@@ -171,10 +171,12 @@ export default function Collection({ collection }) {
             </div>
           </section>
 
-          <CollectionMain
-            possibleTraitTypes={collection.possibleTraitTypes}
-            collectionIdentifier={collectionIdentifier}
-          />
+          <div className="max-w-[1800px] mx-auto mb-8">
+            <CollectionMain
+              possibleTraitTypes={collection.possibleTraitTypes}
+              collectionIdentifier={collectionIdentifier}
+            />
+          </div>
         </main>
       </Container>
     </>

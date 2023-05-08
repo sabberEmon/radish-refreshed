@@ -26,12 +26,12 @@ export default function CartItem({ item }) {
 
       <div className="flex flex-col items-center">
         <div className="flex items-center gap-x-1">
-          <Image src={currency} width={16} height={16} alt="currency" />
-          <span className="text-sm font-extrabold">700 XRD</span>
+          <Image src={currency} width={14} height={14} alt="currency" />
+          <span className="text-xs font-extrabold">700 XRD</span>
         </div>
 
         <BsCartDash
-          className="text-[#9CA4AB] cursor-pointer text-xl mt-2 hover:text-red-500 transition-all duration-300 ease-in-out"
+          className="text-[#9CA4AB] cursor-pointer text-lg mt-2 hover:text-red-500 transition-all duration-300 ease-in-out"
           onClick={() =>
             dispatch({ type: "cart/removeFromCart", payload: item })
           }
