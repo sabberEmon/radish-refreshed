@@ -2,7 +2,7 @@ import Image from "next/image";
 import { MdFavoriteBorder, MdFavorite, MdAccessTime } from "react-icons/md";
 import currency from "../../images/Diamond_Shape.png";
 import { Statistic, message } from "antd";
-import { BsCartPlus } from "react-icons/bs";
+import { BsCartPlus, BsCartDash } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 
 function SingleNft({ nft }) {
@@ -84,33 +84,51 @@ function SingleNft({ nft }) {
 
         <div className="h-[45px] w-[1px] bg-white"></div>
 
-        <div
-          className="w-[15%] flex justify-center items-center"
-          onClick={(e) => {
-            e.stopPropagation();
-            // check if item is already in cart
-            const item = cart.items.find((item) => item._id === nft._id);
-            if (item) {
-              message.error("Item already in cart");
-              return;
-            }
+        {cart.items.find((item) => item._id === nft._id) ? (
+          <div
+            className="w-[15%] flex justify-center items-center"
+            onClick={(e) => {
+              e.stopPropagation();
+              dispatch({
+                type: "cart/removeFromCart",
+                payload: nft,
+              });
 
-            dispatch({
-              type: "cart/addToCart",
-              payload: {
-                _id: nft._id,
-                picture: nft.picture,
-                title: nft.title,
-                price: 700,
-                parentCollection: nft.parentCollection,
-              },
-            });
+              message.success("Item removed from cart");
+            }}
+          >
+            <BsCartDash className="text-[21px] text-white" />
+          </div>
+        ) : (
+          <div
+            className="w-[15%] flex justify-center items-center"
+            onClick={(e) => {
+              e.stopPropagation();
+              // check if item is already in cart
+              const item = cart.items.find((item) => item._id === nft._id);
+              if (item) {
+                message.error("Item already in cart");
+                return;
+              }
 
-            message.success("Item added to cart");
-          }}
-        >
-          <BsCartPlus className="text-[21px] text-white" />
-        </div>
+              dispatch({
+                type: "cart/addToCart",
+                payload: {
+                  _id: nft._id,
+                  picture: nft.picture,
+                  title: nft.title,
+                  price: 700,
+                  parentCollection: nft.parentCollection,
+                  rank: nft.rank,
+                },
+              });
+
+              message.success("Item added to cart");
+            }}
+          >
+            <BsCartPlus className="text-[21px] text-white" />
+          </div>
+        )}
       </div>
     </div>
   );

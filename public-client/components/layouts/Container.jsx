@@ -1,17 +1,21 @@
 import { useDispatch, useSelector } from "react-redux";
 import Footer from "../common/Footer.jsx";
 import Navbar from "../common/Navbar.jsx";
-import { Drawer, Modal, message } from "antd";
+import { Button, Drawer, Modal, message } from "antd";
 import xidarLogo from "../../images/xidar_logo_rounded.png";
 import z3usLogo from "../../images/z3us_logo_rounded.png";
 import Image from "next/image.js";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import axios from "axios";
 import { useAuthInfoQuery } from "@/redux/features/api/apiSlice.js";
+import { BsCart2 } from "react-icons/bs";
+import CartItem from "../utils/CartItem.jsx";
+import { Empty } from "antd";
 
 function Container({ children }) {
   const { isError, isLoading } = useAuthInfoQuery();
   const root = useSelector((state) => state.main.root);
+  const cart = useSelector((state) => state.main.cart);
   const dispatch = useDispatch();
 
   // login handler
@@ -148,7 +152,12 @@ function Container({ children }) {
 
       {/* cart drawer */}
       <Drawer
-        title="Basic Drawer"
+        title={
+          <div className="font-extrabold text-[21px] flex justify-between items-center">
+            <span>Your Cart </span>
+            <BsCart2 className="text-2xl" />
+          </div>
+        }
         placement="right"
         onClose={() => {
           dispatch({
@@ -158,9 +167,44 @@ function Container({ children }) {
         }}
         open={root.isCartOpen}
       >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        {cart.items?.length > 0 ? (
+          <div>
+            <div className="flex items-center justify-between">
+              <p className="font-bold text-lg">{cart.items.length} items</p>
+              <Button
+                danger
+                type="default"
+                className="text-sm font-bold"
+                onClick={() => {
+                  dispatch({
+                    type: "cart/clearCart",
+                  });
+                }}
+              >
+                Clear cart
+              </Button>
+            </div>
+            <div className="mt-8">
+              {cart?.items?.map((item) => {
+                return <CartItem key={item._id} item={item} />;
+              })}
+            </div>
+
+            <Button
+              className="w-full font-extrabold mt-4"
+              type="primary"
+              size="large"
+            >
+              Complete purchase
+            </Button>
+          </div>
+        ) : (
+          <Empty
+            description={`No items in cart`}
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            className="mt-[20%]"
+          />
+        )}
       </Drawer>
     </>
   );
