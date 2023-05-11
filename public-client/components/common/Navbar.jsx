@@ -245,11 +245,11 @@ export default function Navbar() {
                       // setIsProfileNavVisible(false);
                     }
                     if (e.key === "0") {
-                      router.push("/profile/" + root?.user?._id);
+                      router.push("/profile/" + root?.user?.uuid);
                       setIsProfileNavVisible(false);
                     }
                     if (e.key === "1") {
-                      router.push("/my-account/" + root?.user?._id);
+                      router.push("/my-account/" + root?.user?.uuid);
                       setIsProfileNavVisible(false);
                     }
                   },
@@ -258,7 +258,9 @@ export default function Navbar() {
                 overlayStyle={{
                   marginTop: "20px",
                 }}
+                align=""
                 placement=""
+                arrow
                 open={isProfileNavVisible}
                 onOpenChange={(open) => {
                   setIsProfileNavVisible(open);
@@ -267,7 +269,7 @@ export default function Navbar() {
                 <div className="h-[41px] w-[41px] flex justify-center items-center rounded-full ml-2 cursor-pointer">
                   <Avatar
                     size={40}
-                    // src={""}
+                    src={root?.user?.profilePicture}
                     icon={<MdPersonOutline />}
                     className=""
                   />

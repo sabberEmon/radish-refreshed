@@ -14,8 +14,13 @@ function Collection({ item }) {
           alt={item?.title}
           width={297}
           height={200}
-          className="rounded-t-[16px]"
+          className="rounded-t-[16px] object-cover"
         />
+        {/* <img
+          src={item?.collectionBanner}
+          alt=""
+          className="h-[200px] w-[297px] object-cover"
+        /> */}
         <Image
           src={item?.collectionProfilePicture}
           alt={item?.collectionIdentifier}

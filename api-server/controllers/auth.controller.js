@@ -21,6 +21,7 @@ exports.handleRegister = async (req, res) => {
       uuid: uuidv4(),
       primaryWallet,
       signedMessage,
+      wallets: [primaryWallet],
     });
 
     // jwt
@@ -104,6 +105,7 @@ exports.handleLogin = async (req, res) => {
       uuid: uuidv4(),
       primaryWallet,
       signedMessage,
+      wallets: [primaryWallet],
     });
 
     // jwt

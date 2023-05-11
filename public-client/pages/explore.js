@@ -15,7 +15,7 @@ function filterByCategory(collections, type) {
 
 export default function Explore({ collections }) {
   const router = useRouter();
-  console.log(collections);
+  // console.log(collections);
 
   const tabItems = [
     {

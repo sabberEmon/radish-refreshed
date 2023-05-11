@@ -10,6 +10,8 @@ import { MdOutlineShare } from "react-icons/md";
 import CollectionMain from "@/components/collection/CollectionMain";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { ReactComponent as TwitterIcon } from "../../images/profile/tw.svg";
+import telegramLogo from "../../images/profile/telegram-logo.png";
 
 export default function Collection({ collection }) {
   // console.log(collection);
@@ -39,7 +41,7 @@ export default function Collection({ collection }) {
             />
 
             {/* collection Card */}
-            <div className="relative -mt-16 xl:px-20 px-4 flex justify-between max-w-[1800px] mx-auto">
+            <div className="relative -mt-16 xl:px-20 px-4 md:px-6  md:flex justify-between max-w-[1800px] mx-auto">
               <div>
                 <div className="flex justify-start">
                   <div className="w-[112px] h-[112px] rounded-full border-4 border-white border-solid flex justify-center items-center">
@@ -166,6 +168,35 @@ export default function Collection({ collection }) {
                   <Button className="w-[46px] h-[46px] rounded-[23px] flex justify-center items-center">
                     <MdOutlineShare className="h-6 w-6" />
                   </Button>
+                </div>
+              </div>
+
+              <div className="md:mt-28 mt-6">
+                <p className="font-extrabold text-sm">
+                  Find us on social media
+                </p>
+
+                <div className="my-4 flex items-center gap-x-1">
+                  {true && (
+                    <Image
+                      src={telegramLogo}
+                      className="cursor-pointer"
+                      width={18}
+                      height={18}
+                      alt="telegram"
+                      onClick={() => {
+                        window.open(user?.facebook, "_blank");
+                      }}
+                    />
+                  )}
+                  {true && (
+                    <TwitterIcon
+                      className="ml-3 cursor-pointer"
+                      onClick={() => {
+                        window.open(user?.twitter, "_blank");
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             </div>

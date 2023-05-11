@@ -2,12 +2,18 @@ import { Tabs, Dropdown, Button, Empty } from "antd";
 import { BsFilter } from "react-icons/bs";
 import ProfileListNfts from "./ProfileListNfts";
 
-export default function ProfileMain({ nfts }) {
+export default function ProfileMain({ data }) {
   const tabItems = [
     {
       key: "5",
       label: <span className="font-bold">Favourites</span>,
-      children: <ProfileListNfts nfts={nfts} tabName={"favourites"} />,
+      children: (
+        <ProfileListNfts
+          // nfts={data.user.favouriteNfts}
+          nfts={[]}
+          tabName={"favourites"}
+        />
+      ),
     },
     {
       key: "3",
@@ -32,12 +38,12 @@ export default function ProfileMain({ nfts }) {
     {
       key: "4",
       label: <span className="font-bold">Owned</span>,
-      children: <ProfileListNfts nfts={[]} tabName={"owned"} />,
+      children: <ProfileListNfts nfts={data.ownedNfts} tabName={"owned"} />,
     },
     {
       key: "2",
       label: <span className="font-bold">On Sale</span>,
-      children: <ProfileListNfts nfts={[]} tabName={"sale"} />,
+      children: <ProfileListNfts nfts={data.onSaleNfts} tabName={"sale"} />,
     },
   ];
 
