@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const apiSlice = createApi({
   reducerPath: "api",
-  tagTypes: ["User", "Notifications", "Comments"],
+  tagTypes: ["User", "Comments"],
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
     // send cookies with every request from nextAuth
@@ -44,7 +44,19 @@ export const apiSlice = createApi({
         }
       },
     }),
+
+    // Home
+    fetchForSaleNfts: builder.query({
+      query: () => "/api/nfts/for-sale",
+    }),
+    fetchAuctionedNfts: builder.query({
+      query: () => "/api/nfts/on-auction",
+    }),
   }),
 });
 
-export const { useAuthInfoQuery } = apiSlice;
+export const {
+  useAuthInfoQuery,
+  useFetchForSaleNftsQuery,
+  useFetchAuctionedNftsQuery,
+} = apiSlice;

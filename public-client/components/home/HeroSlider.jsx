@@ -1,7 +1,6 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper";
 import { MdChevronRight, MdChevronLeft } from "react-icons/md";
-import nftPlaceholder from "../../images/nft/nft.png";
 import Image from "next/image";
 import "swiper/css";
 import { useTheme } from "next-themes";
@@ -91,16 +90,13 @@ export default function HeroSlider({ collections }) {
                 },
               }}
             >
-              {collections.map((collection, index) => (
+              {collections.map((collection) => (
                 <SwiperSlide key={collection._id}>
                   <div className="relative w-fit rounded-[14px] overflow-hidden">
                     <div className="max-w-[302px]">
                       <div className="image-container">
                         <Image
-                          src={
-                            collection.collectionProfilePicture ||
-                            nftPlaceholder
-                          }
+                          src={collection.collectionProfilePicture}
                           width={302}
                           height={324}
                           priority={true}
@@ -111,6 +107,7 @@ export default function HeroSlider({ collections }) {
                               `/collection/${collection.collectionIdentifier}`
                             );
                           }}
+                          alt={collection.title}
                         />
                       </div>
                     </div>
@@ -132,7 +129,7 @@ export default function HeroSlider({ collections }) {
                           className="font-bold text-primary cursor-pointer hover:underline transition-all duration-200 ease-in-out"
                           onClick={(e) => {
                             e.stopPropagation();
-                            router.push(`/profile/${collection.creator?._id}`);
+                            router.push(`/profile/${collection.creator?.uuid}`);
                           }}
                         >
                           {collection.creator?.name}

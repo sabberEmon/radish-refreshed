@@ -9,7 +9,7 @@ export default function Footer() {
   const [email, setEmail] = useState("");
 
   return (
-    <section className="w-full pt-8">
+    <section className="w-full pt-8 mt-10">
       <div className="max-w-[1280px] mx-auto px-4 flex justify-start sm:items-center gap-[30px] sm:gap-[25px] md:gap-[10%] items-start w-full flex-wrap sm:flex-wrap md:flex-wrap lg:flex-nowrap flex-col-reverse sm:flex-col lg:flex-row">
         {/* desktop */}
         <div className="w-fit sm:w-full hidden sm:block">

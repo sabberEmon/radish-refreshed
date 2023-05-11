@@ -58,7 +58,7 @@ app.use("/api/index", indexRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/collection", collectionRouter);
-app.use("/api/nft", nftRouter);
+app.use("/api/nfts", nftRouter);
 
 const connectWithRetry = () => {
   mongoose.set("strictQuery", false);

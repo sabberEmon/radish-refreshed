@@ -1,7 +1,28 @@
 import Container from "@/components/layouts/Container";
 import Head from "next/head";
+import axios from "axios";
+import HeroSlider from "@/components/home/HeroSlider";
+import {
+  useFetchAuctionedNftsQuery,
+  useFetchForSaleNftsQuery,
+} from "@/redux/features/api/apiSlice";
+import ForSaleItems from "@/components/home/ForSaleItems";
+import LiveAuctionItems from "@/components/home/LiveAuctionItems";
+import { Empty } from "antd";
+import { useState } from "react";
+import TopCreator from "@/components/home/TopCreator";
 
-export default function Home({}) {
+export default function Home({ collections, topCollectors }) {
+  const { data: forSaleNftsData, isLoading: forSaleNftsIsLoading } =
+    useFetchForSaleNftsQuery();
+  const { data: auctionedNftsData, isLoading: auctionedNftsIsLoading } =
+    useFetchAuctionedNftsQuery();
+
+  // console.log(forSaleNftsData);
+  // console.log(auctionedNfts);
+
+  const [trendingCollectionSpan, setTrendingCollectionSpan] = useState(1);
+
   return (
     <>
       <Head>
@@ -10,7 +31,175 @@ export default function Home({}) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Container></Container>
+      <Container>
+        <HeroSlider collections={collections} />
+
+        {/* newly listed for sale nfts */}
+        <section className="my-20 max-w-[1520px] mx-auto xl:px-[84px] lg:px-[20px] md:px-[36px] px-[24px]">
+          <h2 className="xl:text-[30px] text-[24px] text-center sm:text-start font-extrabold mb-5">
+            New Listed Items ✨
+          </h2>
+
+          <ForSaleItems
+            nfts={forSaleNftsData?.forSaleNfts}
+            loading={forSaleNftsIsLoading}
+          />
+        </section>
+
+        {/* on auction nfts */}
+        <section className="my-20 max-w-[1520px] mx-auto xl:px-[84px] lg:px-[20px] md:px-[36px] px-[24px]">
+          <h2 className="xl:text-[30px] text-[24px] text-center sm:text-start font-extrabold mb-5">
+            Live Auctions ⚡
+          </h2>
+
+          <LiveAuctionItems
+            nfts={auctionedNftsData?.auctionedNfts}
+            loading={auctionedNftsIsLoading}
+          />
+        </section>
+
+        <section className="mt-20 my-8 max-w-[1520px] mx-auto xl:px-[84px] lg:px-[20px] md:px-[36px] px-[24px]">
+          <div className="flex justify-start items-start gap-4 flex-col sm:flex-row sm:justify-between sm:items-center">
+            <p className="xl:text-[30px] text-[24px] font-extrabold self-center sm:self-start">
+              Trending Collections 🔥
+            </p>
+            <div className="flex items-center gap-x-2 self-center sm:self-start">
+              <div
+                className={`w-[94px] h-[36px] rounded-[18px] flex items-center justify-center font-extrabold text-xs cursor-pointer ${
+                  trendingCollectionSpan === 1
+                    ? "bg-rose-100 text-primary dark:text-white dark:bg-primary"
+                    : "border border-solid border-[#CFDBD599]"
+                }`}
+                onClick={() => {
+                  setTrendingCollectionSpan(1);
+                }}
+              >
+                1 Day
+              </div>
+              <div
+                className={`w-[94px] h-[36px] rounded-[18px] flex items-center justify-center font-extrabold text-xs cursor-pointer ${
+                  trendingCollectionSpan === 7
+                    ? "bg-rose-100 text-primary dark:text-white dark:bg-primary"
+                    : "border border-solid border-[#CFDBD599]"
+                }`}
+                onClick={() => {
+                  setTrendingCollectionSpan(7);
+                }}
+              >
+                7 Days
+              </div>
+              <div
+                className={`w-[94px] h-[36px] rounded-[18px] flex items-center justify-center font-extrabold text-xs cursor-pointer ${
+                  trendingCollectionSpan === 30
+                    ? "bg-rose-100 text-primary dark:text-white dark:bg-primary"
+                    : "border border-solid border-[#CFDBD599]"
+                }`}
+                onClick={() => {
+                  setTrendingCollectionSpan(30);
+                }}
+              >
+                30 Days
+              </div>
+            </div>
+          </div>
+          {/* trending collections detail  */}
+          <div className="flex flex-col md:flex-row xl:gap-6 lg:gap-4 mt-3">
+            <div className="md:w-1/2 w-full hidden sm:block">
+              <table class="w-full table-auto">
+                <thead>
+                  <tr>
+                    <th className="font-bold uppercase text-xs text-start py-4 ">
+                      Collections
+                    </th>
+                    <th className="font-bold uppercase text-xs text-end py-4">
+                      Floor Price
+                    </th>
+                    <th className="font-bold uppercase text-xs text-end py-4">
+                      Volume
+                    </th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+            <div className="md:w-1/2 w-full hidden md:block">
+              <table class="w-full table-auto">
+                <thead className="">
+                  <tr>
+                    <th className="font-bold uppercase text-xs text-start py-4">
+                      Collections
+                    </th>
+                    <th className="font-bold uppercase text-xs text-end py-4">
+                      Floor Price
+                    </th>
+                    <th className="font-bold uppercase text-xs text-end py-4">
+                      Volume
+                    </th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+
+            {/* mobile version  */}
+            <div className="w-full sm:hidden block ">
+              <table class="w-full table-auto"></table>
+            </div>
+          </div>
+          <div className="text-center text-secondaryDarkGray my-6">
+            {/* Not enough data to show trending collections */}
+            <Empty
+              description="Not enough data to show trending collections"
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+            />
+          </div>
+        </section>
+
+        {/* top sellings creators today  */}
+        <section className="my-20 max-w-[1520px] mx-auto xl:px-[84px] lg:px-[20px] md:px-[36px] px-[24px]">
+          <div className="w-full flex justify-center items-center sm:justify-start flex-row">
+            <p className="xl:text-[30px] text-[24px] font-extrabold self-center sm:self-start">
+              Top Collectors ✒️
+            </p>
+          </div>
+          <div className="w-full my-8">
+            {topCollectors.length > 6 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-12 gap-y-6">
+                {topCollectors.map((owner, i) => (
+                  <TopCreator owner={owner} index={i} key={owner.uuid} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center text-secondaryDarkGray my-6">
+                <Empty
+                  description="Not enough data to show top collectors"
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                />
+              </div>
+            )}
+          </div>
+        </section>
+      </Container>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  try {
+    const response = await axios.get(
+      `${process.env.API_BASE_URL}/api/index/home-data`
+    );
+
+    // console.log(response.data);
+
+    return {
+      props: {
+        collections: response.data.collections,
+        topCollectors: response.data.topCollectors,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      props: {},
+    };
+  }
 }

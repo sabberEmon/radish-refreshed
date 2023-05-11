@@ -3,10 +3,8 @@ import avatar from "../../images/avatar.png";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-const TrendingCreators = ({ owner, index }) => {
+export default function TopCreator({ owner, index }) {
   const router = useRouter();
-
-  // console.log(owner);
 
   return (
     <div className="w-full flex justify-between items-center flex-row border-t-0 border-l-0 border-r-0 border-b-2 border-solid border-[#CFDBD599]">
@@ -20,9 +18,10 @@ const TrendingCreators = ({ owner, index }) => {
               height={54}
               quality={100}
               onClick={() => {
-                router.push(`/profile/${owner.id}`);
+                router.push(`/profile/${owner.uuid}`);
               }}
               className="rounded-full cursor-pointer"
+              alt="avatar"
             />
           ) : (
             <Image
@@ -30,15 +29,16 @@ const TrendingCreators = ({ owner, index }) => {
               width={54}
               height={54}
               onClick={() => {
-                router.push(`/profile/${owner.id}`);
+                router.push(`/profile/${owner.uuid}`);
               }}
               className="rounded-full cursor-pointer"
+              alt="avatar"
             />
           )}
           <div
             className="w-full flex justify-start items-start flex-col gap-1 cursor-pointer"
             onClick={() => {
-              router.push(`/profile/${owner.id}`);
+              router.push(`/profile/${owner.uuid}`);
             }}
           >
             <p className="font-bold text-[16px]">{owner.name}</p>
@@ -46,15 +46,10 @@ const TrendingCreators = ({ owner, index }) => {
               <p className="font-semibold text-[14px]">
                 {owner.nftsCount} NFTs
               </p>
-              {/* <p className="font-thin text-[16px] text-[#04C976] text-end">
-                +12,50%
-              </p> */}
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default TrendingCreators;
+}

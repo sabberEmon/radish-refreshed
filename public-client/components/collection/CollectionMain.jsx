@@ -35,7 +35,7 @@ function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
 
   const fetchMoreData = async (page, filters) => {
     const res = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/nft/with-filters?page=${page}`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/nfts/with-filters?page=${page}`,
       {
         filters,
         primaryFilters: {

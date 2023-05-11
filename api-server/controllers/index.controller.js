@@ -1,5 +1,6 @@
 const Collection = require("../models/Collection.model");
 const Nft = require("../models/Nft.model");
+const Leaderboard = require("../models/Leaderboard.model");
 const fs = require("fs");
 
 exports.uploadNfts = async (req, res) => {
@@ -232,5 +233,36 @@ exports.modifyJsonDataFile = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    res.status(500).json({
+      success: false,
+      error: "server_error",
+      message: "Internal server error",
+    });
+  }
+};
+
+exports.getHomeData = async (req, res) => {
+  try {
+    const collections = await Collection.find({}).populate("creator", [
+      "uuid",
+      "name",
+    ]);
+
+    const leaderboard = await Leaderboard.findOne({});
+
+    res.status(200).json({
+      success: true,
+      error: null,
+      message: "Collections fetched successfully",
+      collections,
+      topCollectors: leaderboard?.topCollectors || [],
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error: "server_error",
+      message: "Internal server error",
+    });
   }
 };

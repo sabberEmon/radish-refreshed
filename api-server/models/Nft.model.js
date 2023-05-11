@@ -54,7 +54,7 @@ const nftSchema = new mongoose.Schema(
     },
     endDate: {
       type: Date,
-      default: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
+      // default: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
     },
     priceHistory: {
       type: Array,
