@@ -1,7 +1,7 @@
 import Container from "@/components/layouts/Container";
 import Head from "next/head";
 
-export default function Home({}) {
+export default function Nft({}) {
   return (
     <>
       <Head>

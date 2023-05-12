@@ -8,7 +8,7 @@ export default function LiveAuctionItems({ nfts, loading }) {
       {!loading ? (
         <>
           {nfts.length > 0 ? (
-            <div className="grid 2xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 gap-y-4">
+            <div className="grid gridLaptop:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 gap-y-4">
               {nfts.map((nft) => {
                 return <SingleNft key={nft._id} nft={nft} />;
               })}
@@ -23,7 +23,7 @@ export default function LiveAuctionItems({ nfts, loading }) {
           )}
         </>
       ) : (
-        <div className="grid grid-cols-4 gap-y-4">
+        <div className="grid gridLaptop:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 gap-y-4">
           {[1, 2, 3, 4].map((item) => {
             return <SingleNftSkeleton key={item} />;
           })}

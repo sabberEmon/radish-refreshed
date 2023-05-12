@@ -7,6 +7,10 @@ function Collection({ item }) {
     <Link
       className="max-w-[303px] rounded-[16px] border border-solid border-[#030E170F] dark:border-[#696969] pb-3"
       href={`/collection/${item?.collectionIdentifier}`}
+      style={{
+        textDecoration: "none",
+        color: "inherit",
+      }}
     >
       <div className="relative">
         <Image
@@ -31,7 +35,7 @@ function Collection({ item }) {
       </div>
 
       <div className="pl-[20px] pr-3 mt-2">
-        <h3 className="font-extrabold w-[65%] ml-auto">
+        <h3 className="font-extrabold w-[65%] ml-auto text-primary">
           {
             // item?.title.length > 20 ? item?.title.slice(0, 20) + "..." : item?.title
             item?.title

@@ -1,7 +1,6 @@
 import { Typography, Button, Tag, Empty } from "antd";
 const { Paragraph } = Typography;
 import Shape from "../../images/Diamond_Shape.png";
-import Author from "../../images/creator.png";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import { MdOutlineNorthEast } from "react-icons/md";
@@ -56,7 +55,7 @@ export default function Earnings() {
     };
 
     temp();
-  }, [root?.actionWallet]);
+  }, [root?.actionWallet, root?.walletType]);
 
   const { theme, setTheme } = useTheme();
 
@@ -69,7 +68,7 @@ export default function Earnings() {
             Account balance:
           </p>
           <div className="flex justify-start items-center gap-3">
-            <Image src={Shape} width={28} height={28} />
+            <Image src={Shape} width={28} height={28} alt="currency" />
             <p className="text-[32px] font-thin">
               {walletBalance} <span className="font-bold">XRD</span>
             </p>
@@ -90,7 +89,7 @@ export default function Earnings() {
                 theme == "dark" ? "earn-walletD" : "earn-walletW"
               } text-[#979797]`}
             >
-              {root.user?.wallet}
+              {root.user?.actionWallet}
             </Paragraph>
           </div>
         </div>

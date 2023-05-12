@@ -18,7 +18,7 @@ export default function CartItem({ item }) {
         />
         <div>
           <h6 className="text-sm">{item.title}</h6>
-          <p className="text-[11px] mt-1 text-[#0556FA] font-bold">
+          <p className="text-[11px] mt-1 text-primary font-bold">
             {item.parentCollection.title}
           </p>
         </div>

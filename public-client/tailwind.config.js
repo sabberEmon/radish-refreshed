@@ -15,6 +15,10 @@ module.exports = {
         secondaryDarkGray: "#94999D",
         secondaryWhite: "#F5F5F5",
       },
+      screens: {
+        gridDesktop: "1820px",
+        gridLaptop: "1470px",
+      },
       animation: {
         blob: "blob 7s ease-in-out infinite",
         altblob: "altblob 7s ease-in-out infinite",

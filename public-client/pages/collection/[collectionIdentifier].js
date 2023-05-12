@@ -202,7 +202,7 @@ export default function Collection({ collection }) {
             </div>
           </section>
 
-          <div className="max-w-[1800px] mx-auto mb-8">
+          <div className="max-w-[1820px] mx-auto mb-8">
             <CollectionMain
               possibleTraitTypes={collection.possibleTraitTypes}
               collectionIdentifier={collectionIdentifier}
