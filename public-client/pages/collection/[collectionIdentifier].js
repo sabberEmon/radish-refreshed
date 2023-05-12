@@ -185,7 +185,7 @@ export default function Collection({ collection }) {
                       height={18}
                       alt="telegram"
                       onClick={() => {
-                        window.open(user?.facebook, "_blank");
+                        window.open(user?.telegram, "_blank");
                       }}
                     />
                   )}

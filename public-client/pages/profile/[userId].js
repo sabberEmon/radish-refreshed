@@ -30,7 +30,7 @@ export default function Profile(data) {
         <main>
           <section>
             {/*  eslint-disable-next-line @next/next/no-img-element */}
-            <Image
+            <img
               src={data.user.profileBanner || banner}
               className="w-full h-[360px] object-cover"
               alt="banner"

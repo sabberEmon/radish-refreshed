@@ -12,10 +12,13 @@ const nextConfig = {
         protocol: "https",
         hostname: "buffwild.b-cdn.net",
       },
-
       {
         protocol: "https",
         hostname: "farm.radishsquare.com",
+      },
+      {
+        protocol: "https",
+        hostname: "pool.sdprojectbucket.xyz",
       },
       {
         protocol: "https",

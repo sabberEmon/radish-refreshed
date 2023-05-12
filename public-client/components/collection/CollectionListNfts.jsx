@@ -2,16 +2,28 @@ import { Empty, Spin } from "antd";
 import SingleNft from "../common/SingleNft";
 import { useSelector } from "react-redux";
 import { LoadingOutlined } from "@ant-design/icons";
+import SingleNftSkeleton from "../common/SingleNftSkeleton";
 
 export default function CollectionListNfts({ infinityRef, loading }) {
   const collection = useSelector((state) => state.main.collection);
 
   if (loading) {
     return (
-      <Spin
-        indicator={<LoadingOutlined style={{ fontSize: 35 }} spin />}
-        className="mx-auto inline-block my-10"
-      />
+      // <Spin
+      //   indicator={<LoadingOutlined style={{ fontSize: 35 }} spin />}
+      //   className="mx-auto inline-block my-10"
+      // />
+      <div
+        className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ${
+          collection.isFiltersOpen
+            ? "gridLaptop:grid-cols-3 gridDesktop:grid-cols-4"
+            : "gridLaptop:grid-cols-4 gridDesktop:grid-cols-5"
+        } gap-4 max-w-fit  mx-auto gridLaptop:mx-0`}
+      >
+        {Array.from(Array(20).keys()).map((i) => (
+          <SingleNftSkeleton key={i} />
+        ))}
+      </div>
     );
   }
 

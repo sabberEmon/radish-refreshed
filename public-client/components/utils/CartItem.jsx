@@ -27,7 +27,7 @@ export default function CartItem({ item }) {
       <div className="flex flex-col items-center">
         <div className="flex items-center gap-x-1">
           <Image src={currency} width={14} height={14} alt="currency" />
-          <span className="text-xs font-extrabold">700 XRD</span>
+          <span className="text-xs font-extrabold">{item.price} XRD</span>
         </div>
 
         <BsCartDash

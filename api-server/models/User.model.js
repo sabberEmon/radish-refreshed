@@ -33,6 +33,12 @@ const userSchema = new mongoose.Schema(
     bio: {
       type: String,
     },
+    telegram: {
+      type: String,
+    },
+    twitter: {
+      type: String,
+    },
     favouriteNfts: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Nft",

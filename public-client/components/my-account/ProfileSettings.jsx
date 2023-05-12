@@ -8,11 +8,16 @@ import { useRef, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import WalletNumber from "../utils/WalletNumber";
-import { useDeleteWalletMutation } from "@/redux/features/api/apiSlice";
+import {
+  useDeleteWalletMutation,
+  useEditProfileMutation,
+} from "@/redux/features/api/apiSlice";
 
 export default function ProfileSettings({ user, setAddWalletModalVisible }) {
   const root = useSelector((state) => state.main.root);
   const [deleteWallet] = useDeleteWalletMutation();
+  const [editProfile, { isLoading: editProfileLoading }] =
+    useEditProfileMutation();
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -95,6 +100,31 @@ export default function ProfileSettings({ user, setAddWalletModalVisible }) {
     },
   ];
 
+  // update profile handler
+  const updateProfileHandler = (data) => {
+    message.loading({
+      content: "Updating profile...",
+      key: "updateProfile",
+    });
+
+    editProfile({
+      data,
+    })
+      .unwrap()
+      .then((res) => {
+        message.success({
+          content: "Profile updated",
+          key: "updateProfile",
+        });
+      })
+      .catch((err) => {
+        message.error({
+          content: "Error updating profile",
+          key: "updateProfile",
+        });
+      });
+  };
+
   return (
     <div className="flex gap-x-24">
       <div className="w-full">
@@ -138,15 +168,29 @@ export default function ProfileSettings({ user, setAddWalletModalVisible }) {
           className="max-w-full lg:max-w-[470px]"
           onSubmit={(e) => {
             e.preventDefault();
+
+            let data = {};
+
+            if (e.target.name.value) {
+              data.name = e.target.name.value;
+            }
+
+            if (e.target.bio.value) {
+              data.bio = e.target.bio.value;
+            }
+
+            // console.log(data);
+
+            updateProfileHandler(data);
           }}
         >
           <div className="w-full">
-            <label htmlFor="fullName" className=" block text-sm">
+            <label htmlFor="name" className=" block text-sm">
               Name
             </label>
             <Input
-              id="fullName"
-              name="fullName"
+              id="name"
+              name="name"
               defaultValue={user?.name}
               size="large"
               placeholder="Enter your name"
@@ -179,6 +223,7 @@ export default function ProfileSettings({ user, setAddWalletModalVisible }) {
             className="w-full rounded-[24px] h-[46px] font-bold mt-10"
             type="primary"
             htmlType="submit"
+            disabled={editProfileLoading}
           >
             Save Changes
           </Button>
@@ -189,16 +234,50 @@ export default function ProfileSettings({ user, setAddWalletModalVisible }) {
           className="max-w-full lg:max-w-[470px] mt-16"
           onSubmit={(e) => {
             e.preventDefault();
+            // console.log(e.target.telegram.value);
+            // console.log(e.target.twitter.value);
+
+            // check if tghe url is telegram valid url
+            if (e.target.telegram.value) {
+              const url = new URL(e.target.telegram.value);
+              if (
+                url.hostname !== "telegram.org" &&
+                url.hostname !== "t.me" &&
+                url.hostname !== "web.telegram.org"
+              ) {
+                return message.error("Invalid telegram url");
+              }
+            }
+
+            // check if tghe url is twitter valid url
+            if (e.target.twitter.value) {
+              const url = new URL(e.target.twitter.value);
+              if (url.hostname !== "twitter.com") {
+                return message.error("Invalid twitter url");
+              }
+            }
+
+            let data = {};
+
+            if (e.target.telegram.value) {
+              data.telegram = e.target.telegram.value;
+            }
+            if (e.target.twitter.value) {
+              data.twitter = e.target.twitter.value;
+            }
+
+            // console.log(data);
+            updateProfileHandler(data);
           }}
         >
           <div className="w-full">
-            <label htmlFor="facebook" className=" block text-sm">
+            <label htmlFor="telegram" className=" block text-sm">
               Telegram
             </label>
             <Input
-              id="facebook"
-              name="facebook"
-              defaultValue={user?.facebook}
+              id="telegram"
+              name="telegram"
+              defaultValue={user?.telegram}
               size="large"
               placeholder="Enter your telegram link"
               style={{
@@ -228,7 +307,7 @@ export default function ProfileSettings({ user, setAddWalletModalVisible }) {
           <Button
             className="w-full rounded-[24px] h-[46px] font-bold mt-10"
             type="primary"
-            // loading={updateSocialLoading}
+            disabled={editProfileLoading}
             htmlType="submit"
           >
             Update Social
@@ -243,7 +322,31 @@ export default function ProfileSettings({ user, setAddWalletModalVisible }) {
               type="file"
               className="hidden"
               ref={profilePicInputRef}
-              onChange={(e) => {}}
+              onChange={(e) => {
+                setProfilePictureUpdateLoading(true);
+                const formData = new FormData();
+                formData.append("file", e.target.files[0]);
+
+                axios
+                  .post(
+                    `${process.env.NEXT_PUBLIC_RESOURCES_BASE_URL}/action/add-item`,
+                    formData
+                  )
+                  .then((res) => {
+                    // console.log(res.data);
+                    if (res.data.success) {
+                      let data = {
+                        profilePicture: res.data.url,
+                      };
+
+                      updateProfileHandler(data);
+                      setProfilePictureUpdateLoading(false);
+                    } else {
+                      setProfilePictureUpdateLoading(false);
+                      message.error("Something went wrong");
+                    }
+                  });
+              }}
             />
             <div className="relative w-[100px] h-[100px] group">
               <Image
@@ -265,11 +368,7 @@ export default function ProfileSettings({ user, setAddWalletModalVisible }) {
                   profilePicInputRef.current.click();
                 }}
               >
-                {profilePictureUpdateLoading ? (
-                  <Spin />
-                ) : (
-                  <MdOutlineModeEditOutline className="text-gray-200 text-[24px]" />
-                )}
+                <MdOutlineModeEditOutline className="text-gray-200 text-[24px]" />
               </div>
             </div>
             <div>
@@ -285,7 +384,31 @@ export default function ProfileSettings({ user, setAddWalletModalVisible }) {
               type="file"
               className="hidden"
               ref={bannerPicInputRef}
-              onChange={(e) => {}}
+              onChange={(e) => {
+                setBannerPictureUpdateLoading(true);
+                const formData = new FormData();
+                formData.append("file", e.target.files[0]);
+
+                axios
+                  .post(
+                    `${process.env.NEXT_PUBLIC_RESOURCES_BASE_URL}/action/add-item`,
+                    formData
+                  )
+                  .then((res) => {
+                    // console.log(res.data);
+                    if (res.data.success) {
+                      let data = {
+                        profileBanner: res.data.url,
+                      };
+
+                      updateProfileHandler(data);
+                      setBannerPictureUpdateLoading(false);
+                    } else {
+                      setProfilePictureUpdateLoading(false);
+                      message.error("Something went wrong");
+                    }
+                  });
+              }}
             />
             <div className="w-[100px] h-[100px] rounded-full relative group">
               <Image
@@ -308,11 +431,7 @@ export default function ProfileSettings({ user, setAddWalletModalVisible }) {
                   bannerPicInputRef.current.click();
                 }}
               >
-                {bannerPictureUpdateLoading ? (
-                  <Spin />
-                ) : (
-                  <MdOutlineModeEditOutline className="text-gray-200 text-[24px]" />
-                )}
+                <MdOutlineModeEditOutline className="text-gray-200 text-[24px]" />
               </div>
             </div>
             <div>

@@ -103,7 +103,7 @@ export default function ProfileMain({ data }) {
   );
 
   return (
-    <div className="py-5 profile-tabs-list w-full">
+    <div className="py-5 profile-tabs-list w-full mb-6">
       <Tabs
         defaultActiveKey="5"
         items={tabItems}

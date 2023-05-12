@@ -89,4 +89,5 @@ export const {
   useGetUserAccountQuery,
   useAddWalletMutation,
   useDeleteWalletMutation,
+  useEditProfileMutation,
 } = apiSlice;

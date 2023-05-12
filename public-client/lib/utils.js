@@ -56,31 +56,99 @@ function getNameFromRri(rri) {
   return token?.name;
 }
 
-function getButtonText(nft, userWallet) {
-  if (nft.ownerWallet === userWallet) {
+function getButtonText(nft, userWallets) {
+  if (userWallets.includes(nft.ownerWallet)) {
     if (nft.onAuction) {
-      return "See Bids";
+      return {
+        text: "See Bids",
+        cart: false,
+        price: false,
+        owner: true,
+        displayBid: true,
+        displayOnSale: false,
+      };
     } else if (nft.forSale) {
-      return "Cancel Listing";
+      return {
+        text: "Cancel Listing",
+        cart: false,
+        price: true,
+        owner: true,
+        displayBid: false,
+        displayOnSale: true,
+      };
     } else {
-      return "Sell NFT";
+      return {
+        text: "Sell NFT",
+        cart: false,
+        price: nft.price ? true : false,
+        owner: true,
+        displayBid: false,
+        displayOnSale: false,
+        displayLastSale: true,
+      };
     }
   } else {
     if (nft.onAuction) {
       if (
         nft?.bids?.length > 0 && // if the bids have has the user's wallet address in it then show "See Bids" else show "Place Bid"
-        nft.bids.find((bid) => bid.wallet === userWallet)
+        nft.bids.find((bid) => userWallets.includes(bid.wallet))
       ) {
-        return "Bid Higher";
+        return {
+          text: "Bid Higher",
+          cart: false,
+          owner: false,
+          displayBid: true,
+          displayOnSale: false,
+          highestBid:
+            nft.bids.length > 0
+              ? nft.bids.reduce((prev, current) =>
+                  prev.bid > current.bid ? prev : current
+                ).bid
+              : 0,
+        };
       } else {
-        return "Place Bid";
+        return {
+          text: "Place Bid",
+          cart: false,
+          price: true,
+          owner: false,
+          displayBid: true,
+          displayOnSale: false,
+          highestBid:
+            nft.bids.length > 0
+              ? nft.bids.reduce((prev, current) =>
+                  prev.bid > current.bid ? prev : current
+                ).bid
+              : 0,
+        };
       }
     } else if (nft.forSale) {
-      return "Buy Now";
+      return {
+        text: "Buy Now",
+        cart: true,
+        price: true,
+        owner: false,
+        displayOnSale: true,
+        displayBid: false,
+      };
     } else if (nft.ownerWallet === "Locked") {
-      return "Buy Now";
+      return {
+        text: "Buy Now",
+        cart: true,
+        owner: false,
+        price: true,
+        displayLocked: true,
+      };
     } else {
-      return "View NFT";
+      return {
+        text: "View NFT",
+        price: true,
+        cart: false,
+        owner: false,
+        displayBid: false,
+        displayOnSale: false,
+        displayLastSale: true,
+      };
     }
   }
 }
