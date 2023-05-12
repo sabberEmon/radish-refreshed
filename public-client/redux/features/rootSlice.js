@@ -26,6 +26,7 @@ export const rootSlice = createSlice({
     },
     logout: (state) => {
       state.user = null;
+      localStorage.removeItem("radish_auth_token");
     },
     setIsCartOpen: (state, action) => {
       state.isCartOpen = action.payload;

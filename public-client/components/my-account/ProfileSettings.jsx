@@ -1,4 +1,4 @@
-import { Button, Input, Popconfirm, Spin, message } from "antd";
+import { Button, Input, Popconfirm, Spin, Table, Tag, message } from "antd";
 import { MdOutlineNorthEast, MdOutlineModeEditOutline } from "react-icons/md";
 import profilePlaceholder from "../../images/avatar.png";
 import bannerPlaceholder from "../../images/collection-banner.png";
@@ -6,12 +6,16 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import WalletNumber from "../utils/WalletNumber";
+import { useDeleteWalletMutation } from "@/redux/features/api/apiSlice";
 
-export default function ProfileSettings({}) {
+export default function ProfileSettings({ user, setAddWalletModalVisible }) {
   const root = useSelector((state) => state.main.root);
+  const [deleteWallet] = useDeleteWalletMutation();
 
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [profilePictureUpdateLoading, setProfilePictureUpdateLoading] =
     useState(false);
@@ -20,6 +24,76 @@ export default function ProfileSettings({}) {
 
   const profilePicInputRef = useRef(null);
   const bannerPicInputRef = useRef(null);
+
+  const columns = [
+    {
+      title: "Wallet",
+      dataIndex: "wallet",
+      key: "wallet",
+      render: (text) => (
+        <p>
+          {
+            <WalletNumber
+              walletNumber={text}
+              style="!m-0 !p-0 text-primary font-bold"
+            />
+          }
+        </p>
+      ),
+    },
+    {
+      title: "Tag",
+      dataIndex: "tag",
+      key: "tag",
+      render: (text) => (
+        <>
+          {text === "Primary" ? (
+            <Tag color="green">{text}</Tag>
+          ) : (
+            <Tag color="blue">{text}</Tag>
+          )}
+        </>
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Button
+          danger
+          size="small"
+          onClick={() => {
+            if (record.wallet === user?.primaryWallet) {
+              message.error("Cannot delete primary wallet");
+              return;
+            }
+            message.loading({
+              content: "Deleting wallet...",
+              key: "deleteWallet",
+            });
+            deleteWallet({
+              wallet: record.wallet,
+            })
+              .unwrap()
+              .then((res) => {
+                message.success({
+                  content: "Wallet deleted",
+                  key: "deleteWallet",
+                });
+              })
+              .catch((err) => {
+                message.error({
+                  content: "Error deleting wallet",
+                  key: "deleteWallet",
+                });
+              });
+          }}
+        >
+          Delete
+        </Button>
+      ),
+    },
+  ];
 
   return (
     <div className="flex gap-x-24">
@@ -38,6 +112,28 @@ export default function ProfileSettings({}) {
           View my account
         </Button>
 
+        <div className="max-w-full lg:max-w-[470px] my-8 lg:my-10">
+          <Table
+            columns={columns}
+            dataSource={user?.wallets.map((wallet) => ({
+              key: wallet,
+              wallet: wallet,
+              tag: wallet === user?.primaryWallet ? "Primary" : "Secondary",
+            }))}
+            pagination={false}
+          />
+
+          <Button
+            className="w-full rounded-[24px] h-[46px] font-bold mt-10"
+            type="primary"
+            onClick={() => {
+              setAddWalletModalVisible(true);
+            }}
+          >
+            Add Wallet
+          </Button>
+        </div>
+
         <form
           className="max-w-full lg:max-w-[470px]"
           onSubmit={(e) => {
@@ -51,7 +147,7 @@ export default function ProfileSettings({}) {
             <Input
               id="fullName"
               name="fullName"
-              defaultValue={root.user?.name}
+              defaultValue={user?.name}
               size="large"
               placeholder="Enter your name"
               style={{
@@ -68,7 +164,7 @@ export default function ProfileSettings({}) {
             <Input.TextArea
               id="bio"
               name="bio"
-              defaultValue={root.user?.bio}
+              defaultValue={user?.bio}
               size="large"
               placeholder="Tell the world your story"
               style={{
@@ -82,10 +178,6 @@ export default function ProfileSettings({}) {
           <Button
             className="w-full rounded-[24px] h-[46px] font-bold mt-10"
             type="primary"
-            // loading={
-            //   isLoading &&
-            //   (profilePictureUpdateLoading || bannerPictureUpdateLoading)
-            // }
             htmlType="submit"
           >
             Save Changes
@@ -106,7 +198,7 @@ export default function ProfileSettings({}) {
             <Input
               id="facebook"
               name="facebook"
-              defaultValue={root.user?.facebook}
+              defaultValue={user?.facebook}
               size="large"
               placeholder="Enter your telegram link"
               style={{
@@ -123,7 +215,7 @@ export default function ProfileSettings({}) {
             <Input
               id="twitter"
               name="twitter"
-              defaultValue={root.user?.twitter}
+              defaultValue={user?.twitter}
               size="large"
               placeholder="Enter your twitter link"
               style={{
@@ -155,7 +247,7 @@ export default function ProfileSettings({}) {
             />
             <div className="relative w-[100px] h-[100px] group">
               <Image
-                src={root.user?.profilePicture || profilePlaceholder}
+                src={user?.profilePicture || profilePlaceholder}
                 width={100}
                 height={100}
                 quality={100}
@@ -197,7 +289,7 @@ export default function ProfileSettings({}) {
             />
             <div className="w-[100px] h-[100px] rounded-full relative group">
               <Image
-                src={root.user?.profileBanner || bannerPlaceholder}
+                src={user?.profileBanner || bannerPlaceholder}
                 width={100}
                 objectFit="cover"
                 height={100}
@@ -236,7 +328,11 @@ export default function ProfileSettings({}) {
             title="Are you sure to logout?"
             // description="Are you sure to delete this task?"
             onConfirm={() => {
-              signOut();
+              dispatch({
+                type: "root/logout",
+              });
+              message.success("Logged out successfully");
+              router.replace("/");
             }}
             okText="Yes"
             cancelText="No"

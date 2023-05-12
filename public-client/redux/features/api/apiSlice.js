@@ -44,6 +44,33 @@ export const apiSlice = createApi({
         }
       },
     }),
+    getUserAccount: builder.query({
+      query: () => "/api/user/my-account",
+      providesTags: ["User"],
+    }),
+    addWallet: builder.mutation({
+      query: (body) => ({
+        url: "/api/user/wallets",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["User"],
+    }),
+    deleteWallet: builder.mutation({
+      query: (body) => ({
+        url: `/api/user/wallets/${body.wallet}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["User"],
+    }),
+    editProfile: builder.mutation({
+      query: (body) => ({
+        url: "/api/user/edit-profile",
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["User"],
+    }),
 
     // Home
     fetchForSaleNfts: builder.query({
@@ -59,4 +86,7 @@ export const {
   useAuthInfoQuery,
   useFetchForSaleNftsQuery,
   useFetchAuctionedNftsQuery,
+  useGetUserAccountQuery,
+  useAddWalletMutation,
+  useDeleteWalletMutation,
 } = apiSlice;

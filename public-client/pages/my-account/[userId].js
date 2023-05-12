@@ -4,18 +4,31 @@ import Earnings from "@/components/my-account/Earnings";
 import ProfileSettings from "@/components/my-account/ProfileSettings";
 import Sidebar from "@/components/my-account/Sidebar";
 import Support from "@/components/my-account/Support";
-import { Button } from "antd";
+import { Button, Input, Modal, Spin, message } from "antd";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdKeyboardArrowLeft } from "react-icons/md";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import profilePlaceholder from "../../images/avatar.png";
+import {
+  useAddWalletMutation,
+  useGetUserAccountQuery,
+} from "@/redux/features/api/apiSlice";
+import { LoadingOutlined } from "@ant-design/icons";
 
 export default function MyAccount({}) {
   const root = useSelector((state) => state.main.root);
+  const {
+    data: userAccountData,
+    isFetching,
+    isLoading,
+    isError,
+  } = useGetUserAccountQuery();
+  const [addWallet, { isLoading: addWalletIsLoading }] = useAddWalletMutation();
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [tabIndex, setTabIndex] = useState(
     router.query.ref === "notifications" ? 2 : 0
@@ -23,6 +36,19 @@ export default function MyAccount({}) {
   const [showTabIndex, setShowTabIndex] = useState(
     router.query.ref === "notifications" ? true : false
   );
+
+  const [addWalletModalVisible, setAddWalletModalVisible] = useState(false);
+  const [newWallet, setNewWallet] = useState("");
+
+  // console.log("userAccountData", userAccountData);
+
+  if (isError || userAccountData?.status === "unauthenticated") {
+    message.error("Please login again");
+    setTimeout(() => {
+      router.push("/");
+    }, 1000);
+    return null;
+  }
 
   return (
     <>
@@ -33,70 +59,147 @@ export default function MyAccount({}) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Container>
-        <main className="max-w-[1550px] mx-auto xl:px-[84px] lg:px-[48px] md:px-[24px] sm:px-[24px] px-[24px] h-full flex flex-col sm:flex-row">
-          <div
-            className={`sm:hidden flex w-full justify-center items-center relative h-12 mt-0`}
-          >
-            <Button
-              className={`absolute left-0 bg-[#EBF0F080] border-none `}
-              shape="circle"
-              icon={<MdKeyboardArrowLeft className="text-xl mt-[1.5px]" />}
-              onClick={() => {
-                setShowTabIndex(false);
-                if (!showTabIndex) {
-                  router.back();
+        {isFetching || isLoading ? (
+          <div className="flex justify-center items-center h-screen">
+            <Spin
+              indicator={
+                <LoadingOutlined
+                  style={{ fontSize: 30, color: "#DE345E" }}
+                  spin
+                />
+              }
+              className="w-38 h-38"
+              size="large"
+            />
+          </div>
+        ) : (
+          <main className="max-w-[1550px] mx-auto xl:px-[84px] lg:px-[48px] md:px-[24px] sm:px-[24px] px-[24px] h-full flex flex-col sm:flex-row">
+            <div
+              className={`sm:hidden flex w-full justify-center items-center relative h-12 mt-0`}
+            >
+              <Button
+                className={`absolute left-0 bg-[#EBF0F080] border-none `}
+                shape="circle"
+                icon={<MdKeyboardArrowLeft className="text-xl mt-[1.5px]" />}
+                onClick={() => {
+                  setShowTabIndex(false);
+                  if (!showTabIndex) {
+                    router.back();
+                  }
+                }}
+              />
+
+              <p className="text-center font-bold">My Account</p>
+            </div>
+
+            <section
+              className={`${
+                showTabIndex == true ? "hidden" : ""
+              } sm:hidden flex justify-center items-center flex-col gap-2 py-3 mt-7`}
+            >
+              <Image
+                src={
+                  userAccountData?.user?.profilePicture || profilePlaceholder
                 }
+                width={108}
+                height={108}
+                className="rounded-full"
+                alt="profile"
+              />
+
+              <p className=" font-extrabold text-[24px]">{root?.user?.name}</p>
+
+              {/* <p className="text-sm text-center text-[#5D5D5B]">@saroshfarooq</p> */}
+            </section>
+
+            <section
+              className={`${
+                showTabIndex == true ? "hidden" : ""
+              } sm:block border-none sm:border-solid border-r border-[#c7c7c7] border-l-0 border-t-0 border-b-0 w-full mb-8 sm:w-[20%] min-w-[200px] sm:pt-10 pt-5`}
+            >
+              <Sidebar
+                tabIndex={tabIndex}
+                setTabIndex={setTabIndex}
+                setShowTabIndex={setShowTabIndex}
+              />
+            </section>
+
+            <section
+              className={`${
+                showTabIndex == false ? "hidden" : ""
+              } w-full sm:block sm:w-[80%] pt-4 sm:pt-10 px-0 sm:px-10 pb-32 mb-4`}
+            >
+              {
+                {
+                  0: (
+                    <ProfileSettings
+                      user={userAccountData?.user}
+                      setAddWalletModalVisible={setAddWalletModalVisible}
+                    />
+                  ),
+                  1: <Earnings />,
+                  2: <AccountNotifications />,
+                  3: <Support />,
+                }[tabIndex]
+              }
+            </section>
+          </main>
+        )}
+
+        {/* add wallet modal */}
+        <Modal
+          open={addWalletModalVisible}
+          centered
+          onOk={() => {}}
+          onCancel={() => {
+            setAddWalletModalVisible(false);
+          }}
+          className="!rounded-[16px]"
+          style={{ borderRadius: "16px", width: "200px" }}
+          footer={null}
+          width={300}
+        >
+          <h2 className="font-extrabold text-[24px] text-center mt-3 mb-3">
+            Add Wallet
+          </h2>
+          <div className="h-[1px] w-full bg-[#CFDBD599] my-3"></div>
+          <div>
+            <Input
+              size="small"
+              placeholder="Enter wallet address"
+              style={{
+                borderRadius: "24px",
+              }}
+              className="py-3 px-5 placeholder:text-secondaryGray placeholder:font-normal placeholder:text-sm  mt-2"
+              value={newWallet}
+              onChange={(e) => {
+                setNewWallet(e.target.value);
               }}
             />
 
-            <p className="text-center font-bold">My Account</p>
+            <Button
+              className="w-full rounded-[24px] h-[46px] font-bold mt-4 mb-6"
+              type="primary"
+              loading={addWalletIsLoading}
+              onClick={() => {
+                addWallet({
+                  wallet: newWallet,
+                })
+                  .unwrap()
+                  .then((res) => {
+                    message.success("Wallet added successfully");
+                    setAddWalletModalVisible(false);
+                    setNewWallet("");
+                  })
+                  .catch((err) => {
+                    message.error(err.data?.message || "Something went wrong");
+                  });
+              }}
+            >
+              Save
+            </Button>
           </div>
-
-          <section
-            className={`${
-              showTabIndex == true ? "hidden" : ""
-            } sm:hidden flex justify-center items-center flex-col gap-2 py-3 mt-7`}
-          >
-            <Image
-              src={root?.user?.profilePicture || profilePlaceholder}
-              width={108}
-              height={108}
-              className="rounded-full"
-              alt="profile"
-            />
-
-            <p className=" font-extrabold text-[24px]">{root?.user?.name}</p>
-
-            {/* <p className="text-sm text-center text-[#5D5D5B]">@saroshfarooq</p> */}
-          </section>
-
-          <section
-            className={`${
-              showTabIndex == true ? "hidden" : ""
-            } sm:block border-none sm:border-solid border-r border-[#c7c7c7] border-l-0 border-t-0 border-b-0 w-full mb-8 sm:w-[20%] min-w-[200px] sm:pt-10 pt-5`}
-          >
-            <Sidebar
-              tabIndex={tabIndex}
-              setTabIndex={setTabIndex}
-              setShowTabIndex={setShowTabIndex}
-            />
-          </section>
-
-          <section
-            className={`${
-              showTabIndex == false ? "hidden" : ""
-            } w-full sm:block sm:w-[80%] pt-4 sm:pt-10 px-0 sm:px-10 pb-32 mb-4`}
-          >
-            {
-              {
-                0: <ProfileSettings />,
-                1: <Earnings />,
-                2: <AccountNotifications />,
-                3: <Support />,
-              }[tabIndex]
-            }
-          </section>
-        </main>
+        </Modal>
       </Container>
     </>
   );

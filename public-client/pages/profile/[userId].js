@@ -11,6 +11,7 @@ import WalletNumber from "@/components/utils/WalletNumber";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
+import profilePlaceholder from "../../images/avatar.png";
 
 export default function Profile(data) {
   const router = useRouter();
@@ -41,7 +42,7 @@ export default function Profile(data) {
                 <div className="flex justify-start">
                   <div className="w-[112px] h-[112px] rounded-full border-4 border-white border-solid flex justify-center items-center">
                     <Image
-                      src={data.user.profilePicture || banner}
+                      src={data.user.profilePicture || profilePlaceholder}
                       className="rounded-full"
                       alt="profile"
                       width={108}
