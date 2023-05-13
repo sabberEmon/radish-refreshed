@@ -54,6 +54,9 @@ const collectionSlice = createSlice({
     setIsFiltersOpen: (state, action) => {
       state.isFiltersOpen = action.payload;
     },
+    setPage: (state, action) => {
+      state.page = action.payload;
+    },
   },
 });
 
@@ -63,6 +66,7 @@ export const {
   setFilters,
   incrementPage,
   setIsFiltersOpen,
+  setPage,
 } = collectionSlice.actions;
 
 export default collectionSlice.reducer;

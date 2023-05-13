@@ -26,21 +26,34 @@ export default function FilterValues({ possibleTraitTypes }) {
           >
             <Collapse.Panel
               header={
-                <p className="font-bold text-base capitalize -ml-3">
+                <p className="font-bold text-base capitalize -ml-3 mb-[10px]">
                   {traitType.trait_type}
                 </p>
               }
               key={index}
               className="!p-0 !m-0"
             >
-              <div className="space-y-1">
+              <div className="space-y-1 -ml-3">
                 {traitType.values.map((trait) => {
                   return (
                     <div
                       key={trait}
                       className="flex justify-between items-center !w-full"
                     >
-                      <p className="capitalize text-[#5D5D5B]">{trait}</p>
+                      <p
+                        className={`capitalize ${
+                          collection.filters
+                            .find(
+                              (filter) =>
+                                filter.trait_type === traitType.trait_type
+                            )
+                            ?.values.includes(trait)
+                            ? "text-primary font-bold"
+                            : "text-[#5D5D5B]"
+                        }`}
+                      >
+                        {trait}
+                      </p>
                       <Checkbox
                         value={trait}
                         checked={collection.filters

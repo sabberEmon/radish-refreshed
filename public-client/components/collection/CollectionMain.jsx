@@ -1,7 +1,7 @@
 import { Button, Drawer } from "antd";
 import { useEffect, useState } from "react";
 import { BsFilter } from "react-icons/bs";
-import { MdOutlineSearch } from "react-icons/md";
+import { MdClose, MdOutlineSearch } from "react-icons/md";
 import CollectionListNfts from "./CollectionListNfts";
 import Filters from "./Filters";
 import Select from "../utils/Select";
@@ -23,6 +23,7 @@ function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
 
   const [loading, setLoading] = useState(true);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [tempSearch, setTempSearch] = useState("");
   const [search, setSearch] = useState("");
   const [sortOne, setSortOne] = useState({
     label: "Price high to low",
@@ -33,19 +34,78 @@ function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
     value: "availableToBuy",
   });
 
+  console.log(search);
+
   const fetchMoreData = async (page, filters) => {
+    let primaryFilters = {
+      collectionIdentifier: collectionIdentifier,
+    };
+
+    let sortBy = {};
+
+    if (search) {
+      // search in title
+      primaryFilters.title = { $regex: search, $options: "i" };
+    }
+
+    switch (sortOne.value) {
+      case "priceHighToLow":
+        sortBy.price = -1;
+        break;
+      case "priceLowToHigh":
+        sortBy.price = 1;
+        break;
+      case "rankHighToLow":
+        sortBy.rank = 1;
+        break;
+      case "rankLowToHigh":
+        sortBy.rank = -1;
+        break;
+
+      default:
+        break;
+    }
+
+    switch (sortTwo.value) {
+      case "availableToBuy":
+        // primaryFilters.price = { $ne: null };
+        // primaryFilters.forSale = true;
+        // primaryFilters.onAuction = false;
+        // primaryFilters.ownerWallet = "Locked";
+        // these should go as mongoose or query, on the server side, primaryFilters are used as ...primaryFilters
+        primaryFilters = {
+          ...primaryFilters,
+          $or: [
+            { price: { $ne: null } },
+            { forSale: true },
+            { onAuction: true },
+            { ownerWallet: "Locked" },
+          ],
+        };
+
+        break;
+      case "onAuction":
+        primaryFilters.auction = true;
+        break;
+      case "onSale":
+        primaryFilters.forSale = true;
+        break;
+      case "nonMinted":
+        primaryFilters.ownerWallet = "Locked";
+        break;
+      case "all":
+        break;
+
+      default:
+        break;
+    }
+
     const res = await axios.post(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/nfts/with-filters?page=${page}`,
       {
-        filters,
-        primaryFilters: {
-          collectionIdentifier: collectionIdentifier,
-          // price not equal to null in mongoose
-          price: { $ne: null },
-        },
-        sortBy: {
-          price: -1,
-        },
+        filters: search ? [] : filters,
+        primaryFilters,
+        sortBy,
       }
     );
 
@@ -65,17 +125,30 @@ function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
     }
   }, [inView]);
 
+  useEffect(() => {
+    // every time collection.filters, sortOne or sortTwo change, reset page to 1
+    dispatch({
+      type: "collection/setPage",
+      payload: 1,
+    });
+    setLoading(true);
+    dispatch({
+      type: "collection/setNfts",
+      payload: [],
+    });
+  }, [collection.filters, sortOne, sortTwo, search]);
+
   // call fetchMoreData() when collection.page or collection.filters change
   useEffect(() => {
     fetchMoreData(collection.page, collection.filters);
-  }, [collection.page, collection.filters]);
+  }, [collection.page, collection.filters, sortOne, sortTwo, search]);
 
   return (
     <section className="xl:px-20 px-4 mt-10">
       <div className="md:flex items-center gap-x-3 max-w-[1280px]">
         <div className="flex w-full gap-x-3">
           <Button
-            className="md:flex justify-center items-center hidden"
+            className="lg:flex justify-center items-center hidden"
             shape="circle"
             icon={<BsFilter className="h-5 w-5" />}
             type={collection.isFiltersOpen ? "primary" : "default"}
@@ -90,7 +163,7 @@ function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
 
           {/* mobile filter btn */}
           <Button
-            className="flex justify-center items-center md:hidden"
+            className="flex justify-center items-center lg:hidden"
             shape="circle"
             icon={<BsFilter className="h-5 w-5" />}
             type={mobileFiltersOpen ? "primary" : "default"}
@@ -108,20 +181,34 @@ function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
               style={{
                 backgroundColor: "transparent",
               }}
-              value={search}
+              value={tempSearch}
+              onChange={(e) => {
+                setTempSearch(e.target.value);
+              }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  const userSearch = e.target.value;
-                  let actualSearch;
-                  if (userSearch.includes("#")) {
-                    actualSearch = userSearch.replace("#", "hashtag");
-                  } else {
-                    actualSearch = userSearch;
-                  }
-                  setSearch(actualSearch);
+                  // const userSearch = e.target.value;
+                  // let actualSearch;
+                  // if (userSearch.includes("#")) {
+                  //   actualSearch = userSearch.replace("#", "hashtag");
+                  // } else {
+                  //   actualSearch = userSearch;
+                  // }
+                  setSearch(tempSearch);
                 }
               }}
             />
+
+            {/* cross icon to clear search */}
+            {tempSearch && (
+              <MdClose
+                className="w-4 h-4 text-secondaryGray dark:text-secondaryDarkGray cursor-pointer"
+                onClick={() => {
+                  setTempSearch("");
+                  setSearch("");
+                }}
+              />
+            )}
           </div>
         </div>
 
@@ -144,6 +231,8 @@ function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
               { label: "Available to buy", value: "availableToBuy" },
               { label: "On auction", value: "onAuction" },
               { label: "On sale", value: "onSale" },
+              { label: "Non minted", value: "nonMinted" },
+              { label: "All", value: "all" },
             ]}
             value={sortTwo}
             onChange={(option) => {

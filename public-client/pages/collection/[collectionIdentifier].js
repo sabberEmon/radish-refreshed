@@ -11,6 +11,7 @@ import CollectionMain from "@/components/collection/CollectionMain";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { ReactComponent as TwitterIcon } from "../../images/profile/tw.svg";
+import { ReactComponent as TelegramIcon } from "../../images/telegram.svg";
 import telegramLogo from "../../images/profile/telegram-logo.png";
 
 export default function Collection({ collection }) {
@@ -129,7 +130,7 @@ export default function Collection({ collection }) {
                           className="mr-1"
                         />
                         <span className="font-extrabold">
-                          {abbreviateNumber(collection?.floorPrice)}
+                          {abbreviateNumber(collection?.floorPrice)} XRD
                         </span>
                       </div>
                     </div>
@@ -149,7 +150,7 @@ export default function Collection({ collection }) {
                           className="mr-1"
                         />
                         <span className="font-extrabold">
-                          {abbreviateNumber(collection?.volume)}
+                          {abbreviateNumber(collection?.volume)} XRD
                         </span>
                       </div>
                     </div>

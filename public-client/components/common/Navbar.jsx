@@ -269,7 +269,11 @@ export default function Navbar() {
                 <div className="h-[41px] w-[41px] flex justify-center items-center rounded-full ml-2 cursor-pointer">
                   <Avatar
                     size={40}
-                    src={root?.user?.profilePicture}
+                    src={
+                      root?.user?.profilePicture
+                        ? root?.user?.profilePicture
+                        : null
+                    }
                     icon={<MdPersonOutline />}
                     className=""
                   />

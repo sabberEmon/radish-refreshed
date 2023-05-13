@@ -16,6 +16,7 @@ import profilePlaceholder from "../../images/avatar.png";
 export default function Profile(data) {
   const router = useRouter();
   const root = useSelector((state) => state.main.root);
+  console.log(data);
 
   return (
     <>
@@ -31,7 +32,7 @@ export default function Profile(data) {
           <section>
             {/*  eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={data.user.profileBanner || banner}
+              src={data.user.profileBanner}
               className="w-full h-[360px] object-cover"
               alt="banner"
             />

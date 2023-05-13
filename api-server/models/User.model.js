@@ -29,6 +29,8 @@ const userSchema = new mongoose.Schema(
     },
     profileBanner: {
       type: String,
+      default:
+        "https://farm.radishsquare.com/storage/1683958141525_collection-banner.png",
     },
     bio: {
       type: String,

@@ -14,10 +14,10 @@ export default function CollectionListNfts({ infinityRef, loading }) {
       //   className="mx-auto inline-block my-10"
       // />
       <div
-        className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ${
+        className={`grid grid-cols-1 md:grid-cols-2  ${
           collection.isFiltersOpen
-            ? "gridLaptop:grid-cols-3 gridDesktop:grid-cols-4"
-            : "gridLaptop:grid-cols-4 gridDesktop:grid-cols-5"
+            ? "lg:grid-cols-2 gridLaptop:grid-cols-3 gridDesktop:grid-cols-4"
+            : "lg:grid-cols-3 gridLaptop:grid-cols-4 gridDesktop:grid-cols-5"
         } gap-4 max-w-fit  mx-auto gridLaptop:mx-0`}
       >
         {Array.from(Array(20).keys()).map((i) => (
@@ -27,16 +27,14 @@ export default function CollectionListNfts({ infinityRef, loading }) {
     );
   }
 
-  if (collection.nfts?.length === 0) {
+  if (collection.nfts?.length === 0 && !loading) {
     return (
-      <div className="min-h-[70vh]">
-        <div className="flex justify-center items-center min-h-full">
-          <div>
-            <Empty
-              description={`No items found`}
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-            />
-          </div>
+      <div className="flex justify-center items-center w-full mt-6">
+        <div>
+          <Empty
+            description={`No items found`}
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+          />
         </div>
       </div>
     );
@@ -46,8 +44,8 @@ export default function CollectionListNfts({ infinityRef, loading }) {
     <div
       className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ${
         collection.isFiltersOpen
-          ? "gridLaptop:grid-cols-3 gridDesktop:grid-cols-4"
-          : "gridLaptop:grid-cols-4 gridDesktop:grid-cols-5"
+          ? "lg:grid-cols-2 gridLaptop:grid-cols-3 gridDesktop:grid-cols-4"
+          : "lg:grid-cols-3 gridLaptop:grid-cols-4 gridDesktop:grid-cols-5"
       } gap-4 max-w-fit  mx-auto gridLaptop:mx-0`}
     >
       {collection.nfts?.map((nft) => (
