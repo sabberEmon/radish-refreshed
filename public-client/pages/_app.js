@@ -2,11 +2,11 @@ import { Provider } from "react-redux";
 import { ThemeProvider } from "next-themes";
 import "@/styles/globals.css";
 import { persistor, store } from "@/redux/store";
-import Wrapper from "@/components/utils/Wrapper";
 import NextNProgress from "nextjs-progressbar";
 import { useEffect, useState } from "react";
 import Loader from "@/components/utils/Loader";
 import { PersistGate } from "redux-persist/integration/react";
+import Wrapper from "@/components/layouts/Wrapper";
 
 export default function App({ Component, pageProps }) {
   const [domLoaded, setDomLoaded] = useState(false);

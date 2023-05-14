@@ -13,4 +13,11 @@ router.delete("/wallets/:wallet", authMiddleware, userController.deleteWallet);
 router.get("/my-account", authMiddleware, userController.fetchUserAccount);
 router.get("/profile/:uuid", userController.getUserProfileByUuid);
 
+// activity
+router.post("/follow-user", authMiddleware, userController.followUser);
+router.get("/fetch-users", userController.getAllUsernames);
+
+// search
+router.get("/search/:query", userController.searchProfile);
+
 module.exports = router;

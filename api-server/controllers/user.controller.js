@@ -1,5 +1,6 @@
 const User = require("../models/User.model");
 const Nft = require("../models/Nft.model");
+const axios = require("axios");
 
 exports.editProfile = async (req, res) => {
   const { data } = req.body;
@@ -215,6 +216,146 @@ exports.deleteWallet = async (req, res) => {
       success: true,
       error: null,
       message: "Wallet deleted",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error: "server_error",
+      message: "Internal server error",
+    });
+  }
+};
+
+exports.followUser = async (req, res) => {
+  const { followingUserId } = req.body; // followerUserId is the user who is following
+  // followingUserId is the user who is being followed
+  const followerUserId = req.user._id;
+
+  try {
+    const followingUser = await User.findOne({
+      uuid: followingUserId,
+    });
+
+    if (!followingUser) {
+      return res.status(404).json({
+        success: false,
+        error: "user_not_found",
+        message: "User not found",
+      });
+    }
+
+    const followerUser = await User.findById(followerUserId);
+
+    if (!followerUser) {
+      return res.status(404).json({
+        success: false,
+        error: "user_not_found",
+        message: "User not found",
+      });
+    }
+
+    // add followerUserId to followingUser's followers array
+    followingUser.followers.push(followerUserId);
+
+    // add followingUserId to followerUser's following array
+    followerUser.following.push(followingUser._id);
+
+    await followingUser.save();
+    await followerUser.save();
+
+    res.status(200).json({
+      success: true,
+      error: null,
+      message: "User followed",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error: "server_error",
+      message: "Internal server error",
+    });
+  }
+};
+
+exports.getAllUsernames = async (req, res) => {
+  try {
+    const users = await User.find(
+      {
+        // not empty
+        name: { $ne: "" },
+      },
+      { name: 1, _id: 1 }
+    );
+
+    res.status(200).json({
+      success: true,
+      error: null,
+      message: "Users found",
+      users,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error: "server_error",
+      message: "Internal server error",
+    });
+  }
+};
+
+exports.searchProfile = async (req, res) => {
+  const { query } = req.params;
+
+  try {
+    if (query.startsWith("rdx")) {
+      const foundUser = await User.findOne({
+        wallets: {
+          $in: [query],
+        },
+      });
+
+      if (foundUser) {
+        return res.status(200).json({
+          success: true,
+          error: null,
+          message: "User found",
+          user: foundUser,
+        });
+      }
+    }
+
+    if (query.endsWith(".xrd")) {
+      const response = await axios.get(
+        "https://api.xrd.domains/v1/whois/" + query
+      );
+
+      if (response?.data?.status === "success") {
+        const wallet = response.data?.data?.owner_address;
+
+        const foundUser = await User.findOne({
+          wallets: {
+            $in: [wallet],
+          },
+        });
+
+        if (foundUser) {
+          return res.status(200).json({
+            success: true,
+            error: null,
+            message: "User found",
+            user: foundUser,
+          });
+        }
+      }
+    }
+
+    res.status(200).json({
+      success: false,
+      error: null,
+      message: "No user found",
+      user: null,
     });
   } catch (error) {
     console.log(error);

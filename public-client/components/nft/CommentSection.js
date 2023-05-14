@@ -40,52 +40,18 @@ export default function CommentSection({ users, nft, owner, collection }) {
     inputRef.current.focus();
   };
 
-  // useEffect(() => {
-  //   if (inputValue?.includes("@")) {
-  //     // only pass max 10 users for suggestions
-  //     const data = users?.map((user) => {
-  //       if (user?._id === session?.token?.sub) {
-  //         // skip current user
-  //         return {};
-  //       } else {
-  //         return {
-  //           key: user._id,
-  //           value: user.username,
-  //           label: user.username,
-  //         };
-  //       }
-  //     });
-
-  //     setTagOptions(data);
-  //   } else {
-  //     setTagOptions([]);
-  //   }
-  // }, [inputValue]);
-
-  // console.log(commentsData);
-
   return (
     <div className="w-full">
       <div className="h-[64px] rounded-[12px] border border-solid border-[#CFDBD599] flex px-3 relative py-2">
-        {/* <input
-          type="text"
-          ref={inputRef}
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Leave a comment..."
-          className="flex-grow h-full outline-none border-none placeholder:font-normal font-normal bg-transparent"
-        /> */}
         <Mentions
           style={{ width: "100%", border: "0px" }}
-          // onChange={onChange}
           onSelect={(e) => {
             // console.log(e);
             setMentionedUser(e.key);
           }}
           onPressEnter={() => {
-            if (!session) {
+            if (!root.user) {
               message.error("Please login to comment");
-              router.replace("/auth/login");
               return;
             }
 
@@ -97,7 +63,7 @@ export default function CommentSection({ users, nft, owner, collection }) {
             if (!targetComment) {
               addComment({
                 nftId: router.query.nftId,
-                userId: session.token.sub,
+                userId: root.user._id,
                 text: inputValue,
               }).then((res) => {
                 message.success({
@@ -107,28 +73,23 @@ export default function CommentSection({ users, nft, owner, collection }) {
               });
               setInputValue("");
 
-              root.socket.emit("sendNotification", {
+              root.socket.emit("save-new-individual-notification", {
                 for: owner ? owner._id : collection.creator._id,
-                referenceUser: session.token.sub,
+                type: "user",
+                referenceUser: root.user?._id,
                 message: {
-                  type: "comment",
-                  text: `${
-                    root.user?.username || "An User"
-                  } commented on your NFT`,
+                  text: `User, commented on your NFT ${nft.title}`,
                   link: `/nft/${nft._id}`,
                 },
               });
 
               if (inputValue.includes("@") && mentionedUser) {
-                if (!session) {
-                  router.replace("/auth/login");
-                }
-                root.socket.emit("sendNotification", {
+                root.socket.emit("save-new-individual-notification", {
                   for: mentionedUser,
-                  referenceUser: session.token.sub,
+                  type: "user",
+                  referenceUser: root.user?._id,
                   message: {
-                    type: "mention",
-                    text: `${session.session.user.name} mentioned you`,
+                    text: `User, mentioned you in a comment on NFT ${nft.title}`,
                     link: `/nft/${nft._id}`,
                   },
                 });
@@ -136,21 +97,18 @@ export default function CommentSection({ users, nft, owner, collection }) {
             } else {
               addReply({
                 nftId: router.query.nftId,
-                userId: session.token.sub,
+                userId: root.user._id,
                 text: inputValue,
                 parentId: targetComment._id,
               });
               setInputValue("");
               if (inputValue.includes("@") && mentionedUser) {
-                if (!session) {
-                  router.replace("/auth/login");
-                }
-                root.socket.emit("sendNotification", {
+                root.socket.emit("save-new-individual-notification", {
                   for: mentionedUser,
-                  referenceUser: session.token.sub,
+                  type: "user",
+                  referenceUser: root.user?._id,
                   message: {
-                    type: "mention",
-                    text: `${session.session.user.name} mentioned you`,
+                    text: `User, mentioned you in a comment on NFT ${nft.title}`,
                     link: `/nft/${nft._id}`,
                   },
                 });
@@ -158,19 +116,12 @@ export default function CommentSection({ users, nft, owner, collection }) {
             }
           }}
           onSearch={(text) => {
-            // find match for users based on text
-            // console.log(text);
-
-            // only pass max 10 users for suggestions
             const filtereddata = users?.filter((user) => {
-              if (user?._id === session?.token?.sub) {
+              if (user?._id === root.user?._id) {
                 // skip current user
                 return false;
               } else {
-                return (
-                  user.username?.toLowerCase().includes(text?.toLowerCase()) ||
-                  user.name?.includes(text)
-                );
+                return user.name?.includes(text);
               }
             });
 
@@ -178,8 +129,8 @@ export default function CommentSection({ users, nft, owner, collection }) {
               ?.map((user) => {
                 return {
                   key: user._id,
-                  value: user.username,
-                  label: user.username,
+                  value: user.name,
+                  label: user.name,
                 };
               })
               .slice(0, 5);
@@ -208,9 +159,8 @@ export default function CommentSection({ users, nft, owner, collection }) {
             type="primary"
             // loading={isLoading}
             onClick={() => {
-              if (!session) {
+              if (!root.user) {
                 message.error("Please login to comment");
-                router.replace("/auth/login");
                 return;
               }
 
@@ -222,7 +172,7 @@ export default function CommentSection({ users, nft, owner, collection }) {
               if (!targetComment) {
                 addComment({
                   nftId: router.query.nftId,
-                  userId: session.token.sub,
+                  userId: root.user._id,
                   text: inputValue,
                 }).then((res) => {
                   message.success({
@@ -232,28 +182,23 @@ export default function CommentSection({ users, nft, owner, collection }) {
                 });
                 setInputValue("");
 
-                root.socket.emit("sendNotification", {
+                root.socket.emit("save-new-individual-notification", {
                   for: owner ? owner._id : collection.creator._id,
-                  referenceUser: session.token.sub,
+                  type: "user",
+                  referenceUser: root.user?._id,
                   message: {
-                    type: "comment",
-                    text: `${
-                      root.user?.username || "An User"
-                    } commented on your NFT`,
+                    text: `User, commented on your NFT ${nft.title}`,
                     link: `/nft/${nft._id}`,
                   },
                 });
 
                 if (inputValue.includes("@") && mentionedUser) {
-                  if (!session) {
-                    router.replace("/auth/login");
-                  }
-                  root.socket.emit("sendNotification", {
+                  root.socket.emit("save-new-individual-notification", {
                     for: mentionedUser,
-                    referenceUser: session.token.sub,
+                    type: "user",
+                    referenceUser: root.user?._id,
                     message: {
-                      type: "mention",
-                      text: `${session.session.user.name} mentioned you`,
+                      text: `User, mentioned you in a comment on NFT ${nft.title}`,
                       link: `/nft/${nft._id}`,
                     },
                   });
@@ -261,21 +206,18 @@ export default function CommentSection({ users, nft, owner, collection }) {
               } else {
                 addReply({
                   nftId: router.query.nftId,
-                  userId: session.token.sub,
+                  userId: root.user._id,
                   text: inputValue,
                   parentId: targetComment._id,
                 });
                 setInputValue("");
                 if (inputValue.includes("@") && mentionedUser) {
-                  if (!session) {
-                    router.replace("/auth/login");
-                  }
-                  root.socket.emit("sendNotification", {
+                  root.socket.emit("save-new-individual-notification", {
                     for: mentionedUser,
-                    referenceUser: session.token.sub,
+                    type: "user",
+                    referenceUser: root.user?._id,
                     message: {
-                      type: "mention",
-                      text: `${session.session.user.name} mentioned you`,
+                      text: `User, mentioned you in a comment on NFT ${nft.title}`,
                       link: `/nft/${nft._id}`,
                     },
                   });
@@ -322,6 +264,7 @@ export default function CommentSection({ users, nft, owner, collection }) {
                   inputRef={inputRef}
                   setTargetComment={setTargetComment}
                   setInputValue={setInputValue}
+                  nft={nft}
                 />
               );
             })}

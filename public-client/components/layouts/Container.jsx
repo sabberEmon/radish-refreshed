@@ -12,7 +12,7 @@ import { BsCart2 } from "react-icons/bs";
 import CartItem from "../utils/CartItem.jsx";
 import { Empty } from "antd";
 
-function Container({ children }) {
+function Container({ children, includesFooter = true }) {
   const { isError, isLoading } = useAuthInfoQuery();
   const root = useSelector((state) => state.main.root);
   const cart = useSelector((state) => state.main.cart);
@@ -122,7 +122,7 @@ function Container({ children }) {
     <>
       <Navbar />
       {children}
-      <Footer />
+      {includesFooter && <Footer />}
 
       {/* login modal */}
       <Modal

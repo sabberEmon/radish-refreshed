@@ -20,6 +20,7 @@ export default function SingleComment({
   inputRef,
   setInputValue,
   setTargetComment,
+  nft,
 }) {
   // console.log(comment);
   const root = useSelector((state) => state.main.root);
@@ -49,6 +50,7 @@ export default function SingleComment({
             onClick={() => {
               router.push(`/profile/${comment.user._id}`);
             }}
+            alt="profile picture"
           />
           <div>
             <p
@@ -109,7 +111,6 @@ export default function SingleComment({
           onClick={() => {
             if (!root.user) {
               message.error("Please login to continue");
-              router.push("/auth/login");
             }
             if (comment.user._id === root.user._id) {
               message.warning("You can't favourite your own comment");
@@ -122,14 +123,13 @@ export default function SingleComment({
               setIsLoved((prev) => !prev);
               setLoveCount((prev) => (prev += isLoved ? -1 : 1));
               if (res.data?.hasLiked) {
-                root.socket.emit("sendNotification", {
+                root.socket.emit("save-new-individual-notification", {
                   for: comment.user._id,
-                  referenceUser: root.user._id,
-                  // sendRealtime: false,
+                  type: "user",
+                  referenceUser: root.user?._id,
                   message: {
-                    type: "favouriteComment",
-                    text: `${root.user?.username} favourited your Comment`,
-                    link: `/nft/${comment.nft}`,
+                    text: `User, favourited your Comment on ${nft.title}`,
+                    link: `/nft/${nft._id}`,
                   },
                 });
               }
@@ -147,9 +147,7 @@ export default function SingleComment({
           className="text-primary font-semibold hover:underline cursor-pointer transition-all ease-in-out duration-200 "
           onClick={() => {
             setTargetComment(comment);
-            setInputValue(
-              comment.user?.username ? `@${comment.user.username} ` : ""
-            );
+            setInputValue(comment.user?.name ? `@${comment.user.name} ` : "");
             inputRef.current.focus();
           }}
         >
@@ -210,6 +208,7 @@ export default function SingleComment({
                         width={48}
                         height={48}
                         className="rounded-full"
+                        alt="profile picture"
                       />
                       <div>
                         <p className="text-sm font-bold ">{reply.user.name}</p>
@@ -265,18 +264,6 @@ export default function SingleComment({
               </>
             );
           })}
-
-        {/* {comment.replies.length > 2 &&
-          replyPage * 2 + 2 < comment.replies.length && (
-            <div className="w-fit mx-auto mt-8 mb-4 ">
-              <Button
-                className="w-[118px] h-[43px] rounded-xl font-bold text-sm"
-                onClick={() => setReplyPage(replyPage + 1)}
-              >
-                Load More
-              </Button>
-            </div>
-          )} */}
       </div>
     </div>
   );

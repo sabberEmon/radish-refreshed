@@ -71,6 +71,16 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+    followUser: builder.mutation({
+      query: (body) => ({
+        url: `/api/user/follow-user`,
+        method: "POST",
+        body,
+      }),
+    }),
+    getUsernames: builder.query({
+      query: () => "/api/user/fetch-users",
+    }),
 
     // Home
     fetchForSaleNfts: builder.query({
@@ -78,6 +88,51 @@ export const apiSlice = createApi({
     }),
     fetchAuctionedNfts: builder.query({
       query: () => "/api/nfts/on-auction",
+    }),
+
+    // Nft
+    toggleLike: builder.mutation({
+      query: (body) => ({
+        url: "/api/nfts/nft/toggle-like",
+        method: "PUT",
+        body,
+      }),
+    }),
+    createAuction: builder.mutation({
+      query: (body) => ({
+        url: "/api/nfts/create-auction",
+        method: "POST",
+        body,
+      }),
+    }),
+
+    // Comments
+    addComment: builder.mutation({
+      query: (body) => ({
+        url: "/api/nfts/add-comment",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Comments"],
+    }),
+    addReply: builder.mutation({
+      query: (body) => ({
+        url: "/api/nfts/add-reply",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Comments"],
+    }),
+    getComments: builder.query({
+      query: ({ nftId }) => "/api/nfts/fetch-comments/" + nftId,
+      providesTags: ["Comments"],
+    }),
+    likeComment: builder.mutation({
+      query: (body) => ({
+        url: "/api/nfts/like-comment",
+        method: "POST",
+        body,
+      }),
     }),
   }),
 });
@@ -90,4 +145,12 @@ export const {
   useAddWalletMutation,
   useDeleteWalletMutation,
   useEditProfileMutation,
+  useFollowUserMutation,
+  useToggleLikeMutation,
+  useCreateAuctionMutation,
+  useAddCommentMutation,
+  useAddReplyMutation,
+  useGetCommentsQuery,
+  useGetUsernamesQuery,
+  useLikeCommentMutation,
 } = apiSlice;

@@ -27,6 +27,7 @@ import { ReactComponent as NightActiveIcon } from "../../images/navbar/night-act
 import { ReactComponent as NotificationIcon } from "../../images/navbar/notification.svg";
 import { ReactComponent as NotificationActiveIcon } from "../../images/navbar/notification-active.svg";
 import { ReactComponent as RadishLogo } from "../../images/radish.svg";
+import Notifications from "../utils/Notifications";
 
 export default function Navbar() {
   const root = useSelector((state) => state.main.root);
@@ -160,18 +161,45 @@ export default function Navbar() {
             >
               <span>Swap</span>
             </div>
+
+            <div
+              className={`text-secondaryGray font-bold cursor-pointer px-2 py-6 mr-4 ${
+                router.pathname === "/ins" &&
+                " pb-5  border-b-4 border-solid border-secondaryBlack dark:border-white border-t-0 border-l-0 border-r-0 dark:text-white text-black"
+              }`}
+              onClick={() => {
+                window.open(
+                  "https://radish-eco.gitbook.io/instructions/",
+                  "_blank"
+                );
+              }}
+            >
+              <span>Instructions</span>
+            </div>
           </div>
           <div className="flex items-center h-full">
             {isComponentVisible ? (
               <IoNotifications
                 className="w-6 h-6 text-primary mr-4 cursor-pointer"
-                onClick={() => {}}
+                onClick={() => {
+                  setIsComponentVisible(false);
+                }}
               />
             ) : (
-              <Badge count={5} offset={[-33, 5]} size="small">
+              <Badge
+                count={
+                  root?.notifications?.filter((notification) => {
+                    return notification.isRead === false;
+                  })?.length
+                }
+                offset={[-33, 5]}
+                size="small"
+              >
                 <IoNotificationsOutline
                   className="w-6 h-6 text-secondaryGray mr-4 cursor-pointer"
-                  onClick={() => {}}
+                  onClick={() => {
+                    setIsComponentVisible(true);
+                  }}
                 />
               </Badge>
             )}
@@ -368,12 +396,11 @@ export default function Navbar() {
           className="absolute right-36 top-16 z-[999999999999999999]"
         >
           {isComponentVisible && (
-            <div
-              className=" relative rounded-[16px] min-h-[400px] w-[285px] bg-white dark:bg-secondaryBlack border border-solid border-gray-200 px-4 pt-4"
-              style={{
-                boxShadow: "4px 4px 12px rgba(3, 14, 23, 0.06)",
-              }}
-            ></div>
+            <Notifications
+              notifications={root?.notifications}
+              userId={root.user?._id}
+              setIsComponentVisible={setIsComponentVisible}
+            ></Notifications>
           )}
         </section>
       </nav>

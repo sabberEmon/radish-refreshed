@@ -34,17 +34,45 @@ export const rootSlice = createSlice({
     setIsCartOpen: (state, action) => {
       state.isCartOpen = action.payload;
     },
+    setIsConnectWalletModalOpen: (state, action) => {
+      state.isConnectWalletModalOpen = action.payload;
+    },
+    setActionWallet: (state, action) => {
+      state.actionWallet = action.payload;
+    },
+
+    // notifications
     appendNotification: (state, action) => {
       state.notifications.push(action.payload);
     },
     setNotifications: (state, action) => {
       state.notifications = action.payload;
     },
-    setIsConnectWalletModalOpen: (state, action) => {
-      state.isConnectWalletModalOpen = action.payload;
+    deleteNotification: (state, action) => {
+      state.notifications = state.notifications.filter(
+        (notification) => notification._id !== action.payload
+      );
     },
-    setActionWallet: (state, action) => {
-      state.actionWallet = action.payload;
+    markNotificationAsRead: (state, action) => {
+      state.notifications = state.notifications.map((notification) => {
+        if (notification._id === action.payload) {
+          notification.isRead = true;
+        }
+        return notification;
+      });
+
+      state.notifications = [...state.notifications];
+    },
+    deleteAllNotifications: (state) => {
+      state.notifications = [];
+    },
+    markAllNotificationsAsRead: (state) => {
+      state.notifications = state.notifications.map((notification) => {
+        notification.isRead = true;
+        return notification;
+      });
+
+      state.notifications = [...state.notifications];
     },
   },
 });
@@ -60,6 +88,10 @@ export const {
   setNotifications,
   setIsConnectWalletModalOpen,
   setActionWallet,
+  deleteNotification,
+  markNotificationAsRead,
+  deleteAllNotifications,
+  markAllNotificationsAsRead,
 } = rootSlice.actions;
 
 export default rootSlice.reducer;

@@ -266,3 +266,49 @@ exports.getHomeData = async (req, res) => {
     });
   }
 };
+
+exports.searchInCollectionAndNft = async (req, res) => {
+  let { searchQuery } = req.params;
+  const { page = 1, limit = 20 } = req.query;
+
+  if (searchQuery.includes("hashtag")) {
+    searchQuery = searchQuery.replace("hashtag", "#");
+  }
+
+  try {
+    // check for existing collection
+    let collections = await Collection.find({
+      title: { $regex: searchQuery, $options: "i" },
+    }).populate("creator", ["name"]);
+
+    let nfts = await Nft.find({
+      $or: [{ title: { $regex: searchQuery, $options: "i" } }],
+    })
+      .populate({
+        path: "parentCollection",
+        select: [
+          "collectionWallet",
+          "title",
+          "collectionProfilePicture",
+          "collectionIdentifier",
+        ],
+      })
+      .skip((page - 1) * limit)
+      .limit(limit * 1);
+
+    res.status(200).json({
+      success: true,
+      error: null,
+      message: "Search fetched successfully",
+      collections,
+      nfts,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error: "server_error",
+      message: "Internal server error",
+    });
+  }
+};

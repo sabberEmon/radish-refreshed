@@ -2,6 +2,7 @@ import { ConfigProvider, theme as antdTheme } from "antd";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "next-themes";
+import { io } from "socket.io-client";
 
 export default function Wrapper({ children }) {
   const root = useSelector((state) => state.main.root);
@@ -14,6 +15,44 @@ export default function Wrapper({ children }) {
       payload: theme,
     });
   }, [theme]);
+
+  // store socket in redux
+  useEffect(() => {
+    dispatch({
+      type: "root/setSocket",
+      payload: io(process.env.NEXT_PUBLIC_API_BASE_URL),
+    });
+  }, []);
+
+  // join socket room
+  useEffect(() => {
+    if (root.socket && root.user) {
+      root.socket.emit("join", root.user._id);
+      root.socket.emit("get-notifications", root.user._id);
+    }
+  }, [root.user, root.socket]);
+
+  // socket listeners
+  useEffect(() => {
+    if (!root.socket || !root.user) return;
+
+    // get all notifications
+    root.socket.on("show-notifications", (notifications) => {
+      dispatch({
+        type: "root/setNotifications",
+        payload: notifications,
+      });
+    });
+
+    // get new individual notification
+    root.socket.on("show-new-individual-notification", (newNotification) => {
+      // console.log("newNotification", newNotification);
+      dispatch({
+        type: "root/addNotification",
+        payload: newNotification,
+      });
+    });
+  }, [root.socket, root.user]);
 
   return (
     <ConfigProvider

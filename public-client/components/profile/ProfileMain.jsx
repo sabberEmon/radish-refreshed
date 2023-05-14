@@ -9,8 +9,7 @@ export default function ProfileMain({ data }) {
       label: <span className="font-bold">Favourites</span>,
       children: (
         <ProfileListNfts
-          // nfts={data.user.favouriteNfts}
-          nfts={[]}
+          nfts={data.user.favouriteNfts}
           tabName={"favourites"}
         />
       ),

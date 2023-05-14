@@ -1,10 +1,9 @@
 import Head from "next/head";
 import Image from "next/image";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import { MdGroupAdd, MdOutlineShare } from "react-icons/md";
 import { ReactComponent as TwitterIcon } from "../../images/profile/tw.svg";
 import telegramLogo from "../../images/profile/telegram-logo.png";
-import banner from "../../images/collection-banner.png";
 import ProfileMain from "@/components/profile/ProfileMain";
 import Container from "@/components/layouts/Container";
 import WalletNumber from "@/components/utils/WalletNumber";
@@ -12,11 +11,14 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import profilePlaceholder from "../../images/avatar.png";
+import { useFollowUserMutation } from "@/redux/features/api/apiSlice";
 
 export default function Profile(data) {
   const router = useRouter();
   const root = useSelector((state) => state.main.root);
-  console.log(data);
+  const [followUser] = useFollowUserMutation();
+  const { userId } = router.query;
+  // console.log(data);
 
   return (
     <>
@@ -102,7 +104,7 @@ export default function Profile(data) {
                 </div>
 
                 <div className="flex items-center gap-x-2 mt-4">
-                  {false ? (
+                  {router.query.userId === root.user?.uuid ? (
                     <Button
                       className="w-[120px] h-[46px] rounded-[12px] font-bold"
                       type="primary"
@@ -116,6 +118,59 @@ export default function Profile(data) {
                     <Button
                       className="w-[120px] h-[46px] rounded-[12px] font-bold"
                       type="primary"
+                      onClick={async () => {
+                        if (!root.user)
+                          return message.error("Please login first");
+
+                        if (data.user.followers.includes(root.user?._id)) {
+                          return message.info("Already following");
+                        }
+
+                        message.loading({
+                          content: "please wait...",
+                          key: "follow",
+                        });
+
+                        try {
+                          followUser({
+                            followingUserId: router.query.userId,
+                          }).then((res) => {
+                            if (res.data?.success) {
+                              // emit socket event
+                              root.socket.emit(
+                                "save-new-individual-notification",
+                                {
+                                  for: router.query.userId,
+                                  type: "user",
+                                  referenceUser: root.user?._id,
+                                  message: {
+                                    text: `User, started following you`,
+                                    link: `/profile/${root.user?.uuid}`,
+                                  },
+                                }
+                              );
+
+                              message.success({
+                                content: res.data.message,
+                                key: "follow",
+                              });
+
+                              // refetch data
+                              router.replace(router.asPath);
+                            } else {
+                              message.error({
+                                content: res.data?.message,
+                                key: "follow",
+                              });
+                            }
+                          });
+                        } catch (error) {
+                          message.error({
+                            content: "Something went wrong",
+                            key: "follow",
+                          });
+                        }
+                      }}
                     >
                       <div className="flex justify-center items-center gap-1.5">
                         <MdGroupAdd className="w-[20px] h-[20px]" />

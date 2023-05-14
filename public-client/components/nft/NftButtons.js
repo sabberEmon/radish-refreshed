@@ -15,7 +15,7 @@ export default function NftButtons({
 }) {
   const root = useSelector((state) => state.main.root);
 
-  if (root.user && root.user.wallet === nft.ownerWallet) {
+  if (root.user && root.user?.wallets.includes(nft.ownerWallet)) {
     return (
       <>
         {!nft.onAuction && (
@@ -67,8 +67,8 @@ export default function NftButtons({
   }
 
   if (nft.onAuction) {
-    const isAlreadyBidder = nft.bids?.find(
-      (bid) => bid?.wallet === root.user?.wallet
+    const isAlreadyBidder = nft.bids?.find((bid) =>
+      root?.user?.wallets.includes(bid?.wallet)
     );
 
     if (isAlreadyBidder) {

@@ -1,4 +1,3 @@
-import Layout from "@/components/utils/Layout";
 import { Button, Select, Skeleton, message } from "antd";
 import Head from "next/head";
 import { MdOutlineSettings, MdCircle } from "react-icons/md";
@@ -22,6 +21,7 @@ import crewImage from "../images/swap/crew_round.png";
 import ociImage from "../images/swap/oci_round.png";
 import caviarImage from "../images/swap/caviar_round.png";
 import caviarSwapLogo from "../images/swap/caviarswap-logo.png";
+import Container from "@/components/layouts/Container";
 
 function roundToTwo(num) {
   return +(Math.round(num + "e+4") + "e-4");
@@ -276,7 +276,7 @@ export default function Swap() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Layout includesFooter={false}>
+      <Container includesFooter={false}>
         <main className="min-h-[100vh] w-full bg-secondaryGray bg-opacity-10 relative">
           <div className="w-[300px] h-[300px] absolute hidden xl:block bg-primary rounded-full bottom-[30%] left-[25%]  filter blur-3xl opacity-60 animate-blob animation-delay-2000"></div>
           <div className="w-[300px] h-[300px] absolute bg-secondary hidden xl:block rounded-full bottom-[30%] right-[25%]  filter blur-3xl opacity-60 animate-blob animation-delay-4000"></div>
@@ -333,13 +333,14 @@ export default function Swap() {
                   }}
                 >
                   {tokens.map((token) => (
-                    <Select.Option value={token.id}>
+                    <Select.Option value={token.id} key={token.id}>
                       <div className="flex items-center gap-x-2">
                         <Image
                           width={20}
                           height={20}
                           src={token.image}
                           quality={100}
+                          alt="token image"
                         />
                         <span className="font-extrabold text-xs sm:text-sm min-[2000px]:text-2xl">
                           {token.name}
@@ -413,13 +414,14 @@ export default function Swap() {
                   }}
                 >
                   {tokens.map((token) => (
-                    <Select.Option value={token.id}>
+                    <Select.Option value={token.id} key={token.id}>
                       <div className="flex items-center gap-x-2">
                         <Image
                           width={20}
                           height={20}
                           src={token.image}
                           quality={100}
+                          alt="token image"
                         />
                         <span className="font-extrabold text-xs sm:text-sm min-[2000px]:text-2xl">
                           {token.name}
@@ -484,7 +486,13 @@ export default function Swap() {
                 <>
                   <div className="flex flex-row justify-between items-center">
                     <div className="flex justify-center items-center flex-col gap-2">
-                      <Image src={RDS} width={38} height={38} quality={100} />
+                      <Image
+                        src={RDS}
+                        width={38}
+                        height={38}
+                        quality={100}
+                        alt="token image"
+                      />
                       <p className="text-base sm:text-lg min-[2000px]:text-2xl">
                         RDS
                       </p>
@@ -545,6 +553,7 @@ export default function Swap() {
                         width={38}
                         height={38}
                         quality={100}
+                        alt="token image"
                       />
                       <p className="text-base sm:text-lg min-[2000px]:text-2xl ">
                         XRD
@@ -609,7 +618,7 @@ export default function Swap() {
             />
           </div>
         </main>
-      </Layout>
+      </Container>
     </>
   );
 }

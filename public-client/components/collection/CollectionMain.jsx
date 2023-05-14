@@ -176,7 +176,7 @@ function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
           <div className="flex xl:w-[420px] w-full h-[40px] items-center px-5 bg-[#ebf0f080] dark:bg-[#49606066] rounded-[8px]">
             <MdOutlineSearch className="w-5 h-5 text-secondaryGray dark:text-secondaryDarkGray" />
             <input
-              placeholder="Search collections"
+              placeholder="Search in collection"
               className="flex flex-grow border-none outline-none h-full placeholder:font-normal px-2 font-normal"
               style={{
                 backgroundColor: "transparent",

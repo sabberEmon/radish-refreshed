@@ -5,17 +5,27 @@ import { Statistic, message } from "antd";
 import { BsCartPlus, BsCartDash } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Animated from "react-mount-animation";
 import { getButtonText } from "@/lib/utils";
+import { useToggleLikeMutation } from "@/redux/features/api/apiSlice";
 
 function SingleNft({ nft }) {
   const cart = useSelector((state) => state.main.cart);
   const root = useSelector((state) => state.main.root);
   const dispatch = useDispatch();
   const router = useRouter();
-  const [isFav, setIsFav] = useState(false);
+
+  const [toggleLike, { isLoading: toggleLikeLoading }] =
+    useToggleLikeMutation();
+
+  const [favCount, setFavCount] = useState(nft?.likes?.length);
+  const [isFav, setIsFav] = useState(nft?.likes?.includes(root?.user?._id));
   const [isHover, setIsHover] = useState(false);
+
+  useEffect(() => {
+    setIsFav(nft?.likes?.includes(root?.user?._id));
+  }, [root.user, nft.likes]);
 
   // add to cart handler
   const addToCartHandler = (e) => {
@@ -103,9 +113,84 @@ function SingleNft({ nft }) {
           <p className="text-sm font-bold text-primary">
             {nft.parentCollection.title}
           </p>
-          <div className="flex items-center gap-x-1">
-            <MdFavoriteBorder className="w-[18px] h-[18px] cursor-pointer" />
-            <span className="font-extrabold">0</span>
+          <div
+            className="flex items-center gap-x-1 cursor-pointer "
+            onClick={(e) => {
+              e.stopPropagation();
+              if (!root.user) {
+                message.error("Please login first");
+                return;
+              }
+
+              if (toggleLikeLoading) return;
+
+              if (root.user.wallets.includes(nft.ownerWallet)) {
+                message.error("You can't like your own NFT");
+                return;
+              }
+
+              message.loading({
+                content: "Please wait...",
+                key: "like",
+              });
+
+              toggleLike({
+                nftId: nft._id,
+                userId: root.user._id,
+              })
+                .then((res) => {
+                  if (res.data?.success) {
+                    if (res.data.hasLiked) {
+                      setIsFav(true);
+                      setFavCount(favCount + 1);
+
+                      console.log("nftOwner", res.data.nftOwner);
+
+                      // emit socket event
+                      if (res.data.nftOwner) {
+                        console.log("emitting socket event");
+                        root.socket.emit("save-new-individual-notification", {
+                          for: res.data.nftOwner,
+                          type: "user",
+                          referenceUser: root.user?._id,
+                          message: {
+                            text: `User, liked your NFT ${nft.title}`,
+                            link: `/nft/${nft._id}`,
+                          },
+                        });
+                      }
+
+                      message.success({
+                        content: "Added to favourites",
+                        key: "like",
+                      });
+                    } else {
+                      setIsFav(false);
+                      setFavCount(favCount - 1);
+                      message.success({
+                        content: "Removed from favourites",
+                        key: "like",
+                      });
+                    }
+                  }
+                })
+                .catch((err) => {
+                  console.log(err);
+                  message.error({
+                    content: err?.data?.message || "Something went wrong",
+                    key: "like",
+                  });
+                });
+            }}
+          >
+            {isFav ? (
+              <MdFavorite className="w-[18px] h-[18px] cursor-pointer text-primary" />
+            ) : (
+              <MdFavoriteBorder className="w-[18px] h-[18px] cursor-pointer" />
+            )}
+            <span className="font-extrabold">
+              {favCount > 999 ? `${(favCount / 1000).toFixed(1)}k` : favCount}
+            </span>
           </div>
         </div>
 
