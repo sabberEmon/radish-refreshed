@@ -1,4 +1,12 @@
-import { Avatar, Badge, Button, Drawer, Dropdown, Popconfirm } from "antd";
+import {
+  Avatar,
+  Badge,
+  Button,
+  Drawer,
+  Dropdown,
+  Popconfirm,
+  message,
+} from "antd";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
@@ -205,7 +213,16 @@ export default function Navbar() {
                 borderRadius: "12px",
                 fontWeight: "bold",
               }}
-              onClick={async function () {}}
+              onClick={function () {
+                if (!root.actionWallet) {
+                  dispatch({
+                    type: "root/setIsConnectWalletModalOpen",
+                    payload: true,
+                  });
+                } else {
+                  message.info("Wallet is already connected");
+                }
+              }}
             >
               {!root.actionWallet ? (
                 "Connect Wallet"

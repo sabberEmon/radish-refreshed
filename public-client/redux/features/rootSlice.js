@@ -3,9 +3,12 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   socket: null,
   user: null,
+  notifications: [],
   theme: undefined,
+  actionWallet: null,
   isLoginModalOpen: false,
   isCartOpen: false,
+  isConnectWalletModalOpen: false,
 };
 
 export const rootSlice = createSlice({
@@ -31,6 +34,18 @@ export const rootSlice = createSlice({
     setIsCartOpen: (state, action) => {
       state.isCartOpen = action.payload;
     },
+    appendNotification: (state, action) => {
+      state.notifications.push(action.payload);
+    },
+    setNotifications: (state, action) => {
+      state.notifications = action.payload;
+    },
+    setIsConnectWalletModalOpen: (state, action) => {
+      state.isConnectWalletModalOpen = action.payload;
+    },
+    setActionWallet: (state, action) => {
+      state.actionWallet = action.payload;
+    },
   },
 });
 
@@ -41,6 +56,10 @@ export const {
   setIsLoginModalOpen,
   logout,
   setIsCartOpen,
+  appendNotification,
+  setNotifications,
+  setIsConnectWalletModalOpen,
+  setActionWallet,
 } = rootSlice.actions;
 
 export default rootSlice.reducer;

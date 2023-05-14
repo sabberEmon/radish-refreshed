@@ -74,6 +74,50 @@ function Container({ children }) {
     }
   };
 
+  const handleConnectWallet = async (walletType) => {
+    if (walletType === "xidar") {
+      if (!window.xidar) {
+        message.error("XIDAR wallet not found");
+        dispatch({
+          type: "root/setIsConnectWalletModalOpen",
+          payload: false,
+        });
+        return;
+      }
+      let w = await window.xidar.v1.connect();
+      dispatch({
+        type: "root/setActionWallet",
+        payload: w,
+      });
+      message.success("Wallet connected successfully");
+      dispatch({
+        type: "root/setIsConnectWalletModalOpen",
+        payload: false,
+      });
+    }
+
+    if (walletType === "z3us") {
+      if (!window.z3us) {
+        message.error("Z3US wallet not found");
+        dispatch({
+          type: "root/setIsConnectWalletModalOpen",
+          payload: false,
+        });
+        return;
+      }
+      let w = await window.z3us.v1.connect();
+      dispatch({
+        type: "root/setActionWallet",
+        payload: w,
+      });
+      message.success("Wallet connected successfully");
+      dispatch({
+        type: "root/setIsConnectWalletModalOpen",
+        payload: false,
+      });
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -127,6 +171,75 @@ function Container({ children }) {
             <MdOutlineKeyboardArrowRight className="text-secondaryGray text-2xl" />
           </div>
 
+          <p className="text-sm text-secondaryGray mt-4 mb-3 text-center">
+            Learn more about{" "}
+            <span
+              className="text-primary font-bold cursor-pointer"
+              onClick={() => {
+                window.open("https://z3us.com/", "_blank");
+              }}
+            >
+              Z3US
+            </span>{" "}
+            or{" "}
+            <span
+              className="text-primary font-bold cursor-pointer"
+              onClick={() => {
+                window.open("https://xidar.io/wallet", "_blank");
+              }}
+            >
+              XIDAR
+            </span>
+          </p>
+        </div>
+      </Modal>
+
+      {/* connect wallet modal */}
+      <Modal
+        open={root.isConnectWalletModalOpen}
+        centered
+        onOk={() => {}}
+        onCancel={() => {
+          dispatch({
+            type: "root/setIsConnectWalletModalOpen",
+            payload: false,
+          });
+        }}
+        className="!rounded-[16px]"
+        style={{ borderRadius: "16px", width: "200px" }}
+        footer={null}
+        width={300}
+      >
+        <h2 className="font-extrabold text-[24px] text-center mt-3 mb-3">
+          Connect wallet
+        </h2>
+        <div className="h-[1px] w-full bg-[#CFDBD599] my-3"></div>
+        <div>
+          <div
+            className="rounded-[12px]  w-full py-3 px-3 bg-gray-100 dark:bg-[#CFDBD526] flex justify-around items-center cursor-pointer gap-x-3"
+            onClick={() => {
+              handleConnectWallet("z3us");
+            }}
+          >
+            <div className="flex items-center gap-x-3">
+              <Image src={z3usLogo} width={30} height={30} alt="z3us" />
+              <p className="font-bold ">Connect to Z3US</p>
+            </div>
+            <MdOutlineKeyboardArrowRight className="text-secondaryGray text-2xl" />
+          </div>
+
+          <div
+            className="rounded-[12px] mt-4 w-full py-3 px-3 bg-gray-100 dark:bg-[#CFDBD526] flex justify-around items-center cursor-pointer gap-x-3"
+            onClick={() => {
+              handleConnectWallet("xidar");
+            }}
+          >
+            <div className="flex items-center gap-x-3">
+              <Image src={xidarLogo} width={30} height={30} alt="xidar" />
+              <p className="font-bold ">Connect to XIDAR</p>
+            </div>
+            <MdOutlineKeyboardArrowRight className="text-secondaryGray text-2xl" />
+          </div>
           <p className="text-sm text-secondaryGray mt-4 mb-3 text-center">
             Learn more about{" "}
             <span

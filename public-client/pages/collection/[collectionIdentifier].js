@@ -5,7 +5,7 @@ import Image from "next/image";
 import WalletNumber from "@/components/utils/WalletNumber";
 import { abbreviateNumber } from "@/lib/utils";
 import { IoShuffle } from "react-icons/io5";
-import { Button } from "antd";
+import { Button, Input, InputNumber, Modal } from "antd";
 import { MdOutlineShare } from "react-icons/md";
 import CollectionMain from "@/components/collection/CollectionMain";
 import axios from "axios";
@@ -13,6 +13,8 @@ import { useRouter } from "next/router";
 import { ReactComponent as TwitterIcon } from "../../images/profile/tw.svg";
 import { ReactComponent as TelegramIcon } from "../../images/telegram.svg";
 import telegramLogo from "../../images/profile/telegram-logo.png";
+import currency from "../../images/Diamond_Shape.png";
+import { useState } from "react";
 
 export default function Collection({ collection }) {
   // console.log(collection);
@@ -21,6 +23,8 @@ export default function Collection({ collection }) {
   const { collectionIdentifier } = router.query;
 
   // console.log(collectionIdentifier);
+
+  const [randomBuyModalOpen, setRandomBuyModalOpen] = useState(false);
 
   return (
     <>
@@ -161,7 +165,12 @@ export default function Collection({ collection }) {
                 </div>
 
                 <div className="w-full mt-8 flex items-center justify-start gap-x-2">
-                  <Button className="flex items-center justify-center  font-extrabold w-[170px] h-[46px] rounded-[12px]">
+                  <Button
+                    className="flex items-center justify-center  font-extrabold w-[170px] h-[46px] rounded-[12px]"
+                    onClick={() => {
+                      setRandomBuyModalOpen(true);
+                    }}
+                  >
                     <IoShuffle className="h-6 w-6 mr-2" />
                     Random Buy
                   </Button>
@@ -210,6 +219,94 @@ export default function Collection({ collection }) {
             />
           </div>
         </main>
+
+        {/* random buy modal */}
+        <Modal
+          open={randomBuyModalOpen}
+          centered
+          onOk={() => {}}
+          onCancel={() => {
+            setRandomBuyModalOpen(false);
+          }}
+          className="!rounded-[16px]"
+          style={{ borderRadius: "16px", width: "200px" }}
+          footer={null}
+          width={400}
+        >
+          <h2 className="font-extrabold text-[24px] text-center mt-3 mb-3">
+            Random Buy
+          </h2>
+          <div className="h-[1px] w-full bg-[#CFDBD599] my-3"></div>
+
+          <div className="my-6">
+            <p className="text-sm text-[#030E1799] dark:text-white">
+              Price per nft -{" "}
+              <span className="text-primary font-bold">
+                {collection.nonMintedNftsCount}
+              </span>{" "}
+              left
+            </p>
+
+            <div className="w-full h-[45px] px-4 rounded-[24px] mt-2 border border-solid border-[#CFDBD599] bg-[#ebf0f080] dark:bg-[#49606066] cursor-not-allowed flex items-center justify-between">
+              <span className="font-bold">{collection.floorPrice}</span>
+              <div className="text-sm font-extrabold flex items-center gap-x-1">
+                <Image src={currency} width={16} height={16} alt="currency" />
+                <span>XRD</span>
+              </div>
+            </div>
+
+            <p className="text-sm text-[#030E1799] dark:text-white mt-4">
+              Amount to Buy
+            </p>
+            <div className="w-full h-[45px] pl-4 pr-3 rounded-[24px] mt-2 border border-solid border-[#CFDBD599] flex items-center justify-between">
+              <p className="font-extrabold  w-[80%]">Choose amount</p>
+              <InputNumber
+                bordered={false}
+                min={1}
+                max={collection.nonMintedNftsCount}
+                size="large"
+                defaultValue={1}
+                style={{
+                  borderRadius: "24px",
+                }}
+                className="w-[20%] h-full pr-1  text-sm !font-extrabold"
+              />
+            </div>
+
+            <div>
+              <p className="text-sm text-[#030E1799] dark:text-white font-extrabold mt-4">
+                Notes:
+              </p>
+
+              <ul className="px-5 mt-2">
+                <li className="text-sm text-[#030E1799] dark:text-white">
+                  You will your NFT tokens.
+                </li>
+                <li className="text-sm text-[#030E1799] dark:text-white ">
+                  Our database will update and NFTs will be assigned to your
+                  wallet address.
+                </li>
+              </ul>
+            </div>
+
+            <div className="mt-8 flex items-center justify-center gap-x-4">
+              <Button
+                className="w-[160px] h-[42px] rounded-[12px] font-extrabold"
+                onClick={() => {
+                  setRandomBuyModalOpen(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="primary"
+                className="w-[160px] h-[42px] rounded-[12px] font-extrabold"
+              >
+                Buy
+              </Button>
+            </div>
+          </div>
+        </Modal>
       </Container>
     </>
   );

@@ -1,5 +1,5 @@
 const Collection = require("../models/Collection.model");
-// const Nft = require("../models/Nft.model");
+const Nft = require("../models/Nft.model");
 
 exports.createCollection = async (req, res) => {
   const { collectionIdentifier, title, creator, ...rest } = req.body;
@@ -120,24 +120,20 @@ exports.getCollection = async (req, res) => {
       });
     }
 
-    // get nfts with dynamic attributes based filters
-    // const nfts = await Nft.find({
-    //   collectionIdentifier,
-    // })
-    //   .populate({
-    //     path: "parentCollection",
-    //     select: ["collectionWallet", "title", "collectionIdentifier"],
-    //     // populate: {},
-    //   })
-    //   .skip((page - 1) * limit)
-    //   .limit(limit * 1);
+    // get nfts count in collection where ownerWallet is not nullis "Locked"
+    const nonMintedNftsCount = await Nft.countDocuments({
+      collectionIdentifier,
+      ownerWallet: "Locked",
+    });
 
     res.status(200).json({
       success: true,
       error: null,
       message: "Collection fetched successfully",
-      collection,
-      // nfts,
+      collection: {
+        ...collection._doc,
+        nonMintedNftsCount,
+      },
     });
   } catch (error) {
     console.log(error);
