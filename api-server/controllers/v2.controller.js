@@ -51,7 +51,13 @@ exports.getNftByQuery = async (req, res) => {
     const nft = await Nft.findOne({
       collectionIdentifier,
       referenceId,
-    });
+    }).select([
+      "-likes",
+      "-comments",
+      "-isEditorsPick",
+      "-totalRarityScore",
+      "-parentCollection",
+    ]);
 
     if (!nft) {
       return res.status(400).json({

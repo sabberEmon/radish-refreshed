@@ -23,6 +23,7 @@ const collectionRouter = require("./routes/collection.route");
 const userRouter = require("./routes/user.route");
 const nftRouter = require("./routes/nft.route");
 const v2Router = require("./routes/v2.route");
+const adminRouter = require("./routes/admin.route");
 const {
   createNotification,
   getNotifications,
@@ -71,6 +72,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/collection", collectionRouter);
 app.use("/api/nfts", nftRouter);
+app.use("/api/admin", adminRouter);
 app.use("/api/v2", v2Router);
 
 // socket.io

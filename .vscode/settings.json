@@ -4,5 +4,9 @@
     "titleBar.activeBackground": "#194A08",
     "titleBar.activeForeground": "#F2FDEE"
   },
-  "eslint.workingDirectories": ["./api-server", "./public-client"]
+  "eslint.workingDirectories": [
+    "./api-server",
+    "./public-client",
+    "./admin-client"
+  ]
 }
