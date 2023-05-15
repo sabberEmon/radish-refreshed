@@ -17,6 +17,10 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "pool.sdprojectbucket.xyz",
+      },
+      {
+        protocol: "https",
         hostname: "farm.radishsquare.com",
       },
       {
