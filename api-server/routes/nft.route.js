@@ -1,6 +1,9 @@
 const express = require("express");
 const nftController = require("../controllers/nft.controller");
-const { authMiddleware } = require("../middlewares/auth.middleware");
+const {
+  authMiddleware,
+  adminAuthCheck,
+} = require("../middlewares/auth.middleware");
 const router = express.Router();
 
 // routes
@@ -20,5 +23,9 @@ router.post("/add-comment", nftController.addComment);
 router.post("/like-comment", nftController.likeComment);
 router.post("/add-reply", nftController.addCommentReply);
 router.get("/fetch-comments/:nftId", nftController.getComments);
+
+// admin
+router.post("/edit-nft", adminAuthCheck, nftController.editNft);
+router.get("/fetch-nfts/:collectionIdentifier", nftController.getNfts);
 
 module.exports = router;

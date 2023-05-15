@@ -5,13 +5,11 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import axios from "axios";
 import Image from "next/image";
-import { useMarkAsEditorsPickMutation } from "@/redux/features/api/apiSlice";
 import { Input } from "antd";
 import { useState } from "react";
 
 export default function Collections({ nfts }) {
   const router = useRouter();
-  const [markAsEditorsPick] = useMarkAsEditorsPickMutation();
   const [renderedNfts, setRenderedNfts] = useState(nfts);
   const [searchLoading, setSearchLoading] = useState(false);
 
@@ -92,26 +90,6 @@ export default function Collections({ nfts }) {
           >
             Edit
           </Button>
-          <Button
-            size="small"
-            type="primary"
-            onClick={() => {
-              markAsEditorsPick({
-                nftId: record._id,
-              }).then((res) => {
-                message.success(
-                  record.isEditorsPick
-                    ? "Removed from Editors Pick"
-                    : "Added to Editors Pick"
-                );
-                router.reload();
-              });
-            }}
-          >
-            {record.isEditorsPick
-              ? "Remove from Editors Pick"
-              : "Add to Editors Pick"}
-          </Button>
           <Button type="default" size="small" danger>
             Delete
           </Button>
@@ -146,7 +124,6 @@ export default function Collections({ nfts }) {
             onSearch={async (txt) => {
               // alert(txt);
               setSearchLoading(true);
-
               const response = await axios.post(
                 `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/collection/search-in-collection/${router.query.collectionIdentifier}`,
                 {
@@ -154,7 +131,6 @@ export default function Collections({ nfts }) {
                   searchText: txt,
                 }
               );
-
               setRenderedNfts(response.data.nfts);
               setSearchLoading(false);
             }}
@@ -187,7 +163,7 @@ export async function getServerSideProps(context) {
   }
 
   const response = await axios.get(
-    `${process.env.API_BASE_URL}/api/nft/fetch-nfts/${collectionIdentifier}`
+    `${process.env.API_BASE_URL}/api/nfts/fetch-nfts/${collectionIdentifier}`
   );
 
   //   console.log(response.data);

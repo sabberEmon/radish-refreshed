@@ -234,7 +234,7 @@ export async function getServerSideProps(context) {
   const { collectionIdentifier } = context.query;
 
   const response = await axios.get(
-    `${process.env.API_BASE_URL}/api/collection/get-collection/${collectionIdentifier}`
+    `${process.env.API_BASE_URL}/api/collection/${collectionIdentifier}`
   );
 
   if (!session) {

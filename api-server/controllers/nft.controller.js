@@ -547,3 +547,77 @@ exports.addComment = async (req, res) => {
     });
   }
 };
+
+exports.editNft = async (req, res) => {
+  const { nftId, ...rest } = req.body;
+
+  if (!nftId) {
+    return res.status(400).json({
+      success: false,
+      error: "nft_id_required",
+      message: "Nft id is required",
+    });
+  }
+
+  try {
+    const editedNft = await Nft.findByIdAndUpdate(nftId, rest, {
+      new: true,
+    });
+
+    if (!editedNft) {
+      return res.status(400).json({
+        success: false,
+        error: "nft_not_found",
+        message: "Nft not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      error: null,
+      message: "Nft edited successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error: "server_error",
+      message: "Internal server error",
+    });
+  }
+};
+
+exports.getNfts = async (req, res) => {
+  const { collectionIdentifier } = req.params;
+  const { page = 1, limit = 100 } = req.query;
+
+  try {
+    const nfts = await Nft.find({ collectionIdentifier })
+      .skip((page - 1) * limit)
+      .limit(limit * 1)
+      .populate({
+        path: "parentCollection",
+        select: [
+          "collectionWallet",
+          "title",
+          "collectionProfilePicture",
+          "collectionIdentifier",
+        ],
+        // populate: {},
+      });
+
+    res.status(200).json({
+      success: true,
+      error: null,
+      message: "Nfts fetched successfully",
+      nfts,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error: "server_error",
+      message: "Internal server error",
+    });
+  }
+};

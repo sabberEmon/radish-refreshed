@@ -1,6 +1,7 @@
 const Collection = require("../models/Collection.model");
 const Nft = require("../models/Nft.model");
 const Leaderboard = require("../models/Leaderboard.model");
+const Subscriber = require("../models/Subscriber.model");
 const fs = require("fs");
 
 exports.uploadNfts = async (req, res) => {
@@ -302,6 +303,42 @@ exports.searchInCollectionAndNft = async (req, res) => {
       message: "Search fetched successfully",
       collections,
       nfts,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      error: "server_error",
+      message: "Internal server error",
+    });
+  }
+};
+
+exports.subscribeToNewsletter = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // check if email already exists
+    const subscriber = await Subscriber.findOne({ email });
+
+    // console.log(subscriber);
+
+    if (subscriber) {
+      return res.status(400).json({
+        success: false,
+        error: "already_subscribed",
+        message: "You are already subscribed to our newsletter",
+      });
+    }
+
+    const newSubscriber = new Subscriber({ email });
+
+    await newSubscriber.save();
+
+    res.status(200).json({
+      success: true,
+      error: null,
+      message: "Subscribed to newsletter",
     });
   } catch (error) {
     console.log(error);

@@ -20,7 +20,7 @@ export const apiSlice = createApi({
     }),
     addCollection: builder.mutation({
       query: (body) => ({
-        url: "/api/collection/create-collection",
+        url: "/api/collection",
         method: "POST",
         body,
       }),
@@ -28,14 +28,7 @@ export const apiSlice = createApi({
     }),
     editNft: builder.mutation({
       query: (body) => ({
-        url: "/api/nft/edit-nft",
-        method: "POST",
-        body,
-      }),
-    }),
-    markAsEditorsPick: builder.mutation({
-      query: (body) => ({
-        url: "/api/nft/mark-as-editors-pick",
+        url: "/api/nfts/edit-nft",
         method: "POST",
         body,
       }),
@@ -56,8 +49,8 @@ export const apiSlice = createApi({
     }),
     editCollection: builder.mutation({
       query: (body) => ({
-        url: "/api/collection/edit-collection",
-        method: "POST",
+        url: "/api/collection",
+        method: "PUT",
         body,
       }),
       invalidatesTags: ["Collections"],
@@ -92,7 +85,6 @@ export const {
   useAddCollectionMutation,
   useDeleteCollectionMutation,
   useEditNftMutation,
-  useMarkAsEditorsPickMutation,
   useAddAdminToWhitelistMutation,
   useVerifyWHitelistRequestMutation,
   useEditCollectionMutation,

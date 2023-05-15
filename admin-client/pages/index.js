@@ -117,7 +117,7 @@ export async function getServerSideProps(context) {
   const session = await getSession(context);
 
   const response = await axios.get(
-    `${process.env.API_BASE_URL}/api/user/get-subscribers`
+    `${process.env.API_BASE_URL}/api/admin/subscribers`
   );
 
   // console.log(response.data);

@@ -164,7 +164,7 @@ export async function getServerSideProps(context) {
   }
 
   const response = await axios.get(
-    `${process.env.API_BASE_URL}/api/collection/get-collections`
+    `${process.env.API_BASE_URL}/api/collection`
   );
 
   // console.log(response.data);

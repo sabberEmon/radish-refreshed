@@ -113,7 +113,7 @@ export async function getServerSideProps(context) {
   }
 
   const response = await axios.get(
-    `${process.env.API_BASE_URL}/api/nft/fetch-nft/${nftId}`
+    `${process.env.API_BASE_URL}/api/nfts/nft/${nftId}`
   );
 
   //   console.log(response.data);
