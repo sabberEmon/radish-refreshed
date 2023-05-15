@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import Footer from "../common/Footer.jsx";
 import Navbar from "../common/Navbar.jsx";
-import { Button, Drawer, Modal, message } from "antd";
+import { Button, Drawer, Modal, message, notification } from "antd";
 import xidarLogo from "../../images/xidar_logo_rounded.png";
 import z3usLogo from "../../images/z3us_logo_rounded.png";
 import Image from "next/image.js";
@@ -11,12 +11,32 @@ import { useAuthInfoQuery } from "@/redux/features/api/apiSlice.js";
 import { BsCart2 } from "react-icons/bs";
 import CartItem from "../utils/CartItem.jsx";
 import { Empty } from "antd";
+import { useEffect } from "react";
 
 function Container({ children, includesFooter = true }) {
   const { isError, isLoading } = useAuthInfoQuery();
   const root = useSelector((state) => state.main.root);
   const cart = useSelector((state) => state.main.cart);
   const dispatch = useDispatch();
+  const [api, contextHolder] = notification.useNotification();
+
+  // socket listeners
+  useEffect(() => {
+    if (!root.socket || !root.user) return;
+
+    // get new individual notification
+    root.socket.on("show-new-individual-notification", (newNotification) => {
+      // console.log("newNotification", newNotification);
+      api["info"]({
+        message: `${newNotification.referenceUser.name || "Guest User"} ${
+          newNotification.message.text?.split(",")[1]
+        }`,
+        description: "",
+        duration: 4,
+        placement: "bottomRight",
+      });
+    });
+  }, [root.socket, root.user]);
 
   // login handler
   const loginHandler = async (walletType) => {
@@ -89,6 +109,10 @@ function Container({ children, includesFooter = true }) {
         type: "root/setActionWallet",
         payload: w,
       });
+      dispatch({
+        type: "root/setActionWalletType",
+        payload: "xidar",
+      });
       message.success("Wallet connected successfully");
       dispatch({
         type: "root/setIsConnectWalletModalOpen",
@@ -110,6 +134,10 @@ function Container({ children, includesFooter = true }) {
         type: "root/setActionWallet",
         payload: w,
       });
+      dispatch({
+        type: "root/setActionWalletType",
+        payload: "z3us",
+      });
       message.success("Wallet connected successfully");
       dispatch({
         type: "root/setIsConnectWalletModalOpen",
@@ -121,6 +149,7 @@ function Container({ children, includesFooter = true }) {
   return (
     <>
       <Navbar />
+      {contextHolder}
       {children}
       {includesFooter && <Footer />}
 

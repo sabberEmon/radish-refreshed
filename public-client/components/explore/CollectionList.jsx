@@ -63,7 +63,7 @@ export default function CollectionList({ data }) {
     );
 
   return (
-    <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-x-3 gap-y-4 md:gap-y-6 md:gap-x-6 xl:gap-x-6 xl:gap-y-6 sm:gap-y-4">
+    <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-x-3 gap-y-4 md:gap-y-6 md:gap-x-6 xl:gap-x-6 xl:gap-y-6 sm:gap-y-4 max-w-fit mx-auto">
       {data.map((item) => {
         return <Collection key={item._id} item={item} />;
       })}

@@ -152,18 +152,6 @@ export default function Navbar() {
 
             <div
               className={`text-secondaryGray font-bold cursor-pointer px-2 py-6 mr-4 ${
-                router.pathname === "/swap" &&
-                " pb-5  border-b-4 border-solid border-secondaryBlack dark:border-white border-t-0 border-l-0 border-r-0 dark:text-white text-black"
-              }`}
-              onClick={() => {
-                router.push("/swap");
-              }}
-            >
-              <span>Swap</span>
-            </div>
-
-            <div
-              className={`text-secondaryGray font-bold cursor-pointer px-2 py-6 mr-4 ${
                 router.pathname === "/ins" &&
                 " pb-5  border-b-4 border-solid border-secondaryBlack dark:border-white border-t-0 border-l-0 border-r-0 dark:text-white text-black"
               }`}
@@ -410,9 +398,16 @@ export default function Navbar() {
           <div className="flex items-center justify-between">
             <div
               className="h-[40px] w-[40px] rounded-full  cursor-pointer  ml-auto"
-              onClick={() => {}}
+              onClick={() => {
+                setIsDrawerVisible(false);
+                router.push("/my-account/" + root?.user?.uuid);
+              }}
             >
-              <Avatar size={40} icon={<MdPersonOutline />} />
+              <Avatar
+                size={40}
+                icon={<MdPersonOutline />}
+                src={root?.user?.profilePicture}
+              />
             </div>
           </div>
         }
@@ -460,6 +455,39 @@ export default function Navbar() {
                 onClick={() => {}}
               />
             )}
+
+            <Button
+              type="primary"
+              style={{
+                width: "130px",
+                height: "40px",
+                borderRadius: "12px",
+                fontWeight: "bold",
+              }}
+              onClick={function () {
+                setIsDrawerVisible(false);
+
+                if (!root.actionWallet) {
+                  dispatch({
+                    type: "root/setIsConnectWalletModalOpen",
+                    payload: true,
+                  });
+                } else {
+                  message.info("Wallet is already connected");
+                }
+              }}
+            >
+              {!root.actionWallet ? (
+                "Connect Wallet"
+              ) : (
+                <span>
+                  {root.actionWallet.slice(0, 6) +
+                    "..." +
+                    root.actionWallet.slice(-4)}
+                </span>
+              )}
+            </Button>
+
             {root.theme === "dark" ? (
               <NightActiveIcon
                 fill="#DE345E"

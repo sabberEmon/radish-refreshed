@@ -196,34 +196,36 @@ export default function Profile(data) {
                 </div>
               </div>
 
-              <div className="md:mt-28 mt-6">
-                <p className="font-extrabold text-sm">
-                  Find us on social media
-                </p>
+              {data.user?.telegram || data.user?.twitter ? (
+                <div className="md:mt-28 mt-6">
+                  <p className="font-extrabold text-sm">
+                    Find us on social media
+                  </p>
 
-                <div className="my-4 flex items-center gap-x-1">
-                  {true && (
-                    <Image
-                      src={telegramLogo}
-                      className="cursor-pointer"
-                      width={18}
-                      height={18}
-                      alt="telegram"
-                      onClick={() => {
-                        window.open(user?.facebook, "_blank");
-                      }}
-                    />
-                  )}
-                  {true && (
-                    <TwitterIcon
-                      className="ml-3 cursor-pointer"
-                      onClick={() => {
-                        window.open(user?.twitter, "_blank");
-                      }}
-                    />
-                  )}
+                  <div className="my-4 flex items-center gap-x-1">
+                    {data.user?.telegram && (
+                      <Image
+                        src={telegramLogo}
+                        className="cursor-pointer"
+                        width={18}
+                        height={18}
+                        alt="telegram"
+                        onClick={() => {
+                          window.open(data.user?.telegram, "_blank");
+                        }}
+                      />
+                    )}
+                    {data.user?.twitter && (
+                      <TwitterIcon
+                        className="ml-3 cursor-pointer"
+                        onClick={() => {
+                          window.open(data.user?.twitter, "_blank");
+                        }}
+                      />
+                    )}
+                  </div>
                 </div>
-              </div>
+              ) : null}
             </div>
           </section>
 

@@ -81,10 +81,10 @@ function SingleNft({ nft }) {
 
   return (
     <div
-      className={`w-[321px] border border-solid  rounded-[16px] group cursor-pointer ${
+      className={`w-[321px] border border-solid dark:bg-[#071521] rounded-[16px] group cursor-pointer ${
         cart.items.find((item) => item._id === nft._id)
           ? "border-primary dark:border-primary"
-          : "border-[#030E170F] dark:border-[#696969]"
+          : "border-[#030E170F] dark:border-none"
       }`}
       onClick={() => {
         router.push(`/nft/${nft._id}`);
@@ -93,10 +93,10 @@ function SingleNft({ nft }) {
       onMouseLeave={() => setIsHover(false)}
     >
       <div className="relative w-fit h-fit">
-        <div className="h-[319px] w-[319px] overflow-hidden rounded-t-[16px]">
+        <div className="h-[319px] w-[320px] overflow-hidden rounded-t-[16px]">
           <Image
             src={nft.picture}
-            width={319}
+            width={320}
             height={319}
             alt="nft"
             className="rounded-[16px] rounded-b-none !object-cover group-hover:scale-110 transition-all duration-500 ease-in-out"

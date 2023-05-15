@@ -181,7 +181,7 @@ export default function Collection({ collection }) {
                 </div>
               </div>
 
-              <div className="md:mt-28 mt-6">
+              {/* <div className="md:mt-28 mt-6">
                 <p className="font-extrabold text-sm">
                   Find us on social media
                 </p>
@@ -208,7 +208,7 @@ export default function Collection({ collection }) {
                     />
                   )}
                 </div>
-              </div>
+              </div> */}
             </div>
           </section>
 

@@ -55,7 +55,8 @@ exports.getNotifications = async (userId) => {
     // notifications should new notifications first
     const notifications = await Notification.find({ for: userId })
       .sort({ createdAt: -1 })
-      .populate("referenceUser", ["name", "profilePicture"]);
+      .populate("referenceUser", ["name", "profilePicture"])
+      .limit(12);
 
     return notifications;
   } catch (error) {

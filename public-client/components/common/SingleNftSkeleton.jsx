@@ -2,7 +2,7 @@ import { Skeleton } from "antd";
 
 export default function SingleNftSkeleton() {
   return (
-    <div className="w-[321px] h-[446px] border border-solid border-[#030E170F] dark:border-[#696969] rounded-[16px]">
+    <div className="w-[321px] h-[446px] border border-solid border-[#030E170F] dark:border-none dark:bg-[#071521] rounded-[16px]">
       <Skeleton.Image
         active={true}
         className="!rounded-t-[16px] !w-full !h-[319px] !rounded-b-none"

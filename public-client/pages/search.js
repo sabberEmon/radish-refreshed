@@ -97,7 +97,7 @@ export async function getServerSideProps(context) {
     if (response.data?.user) {
       return {
         redirect: {
-          destination: `/profile/${response.data.user._id}`,
+          destination: `/profile/${response.data.user.uuid}`,
           permanent: false,
         },
       };

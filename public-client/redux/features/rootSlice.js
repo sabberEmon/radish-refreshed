@@ -6,6 +6,7 @@ const initialState = {
   notifications: [],
   theme: undefined,
   actionWallet: null,
+  actionWalletType: null,
   isLoginModalOpen: false,
   isCartOpen: false,
   isConnectWalletModalOpen: false,
@@ -40,10 +41,14 @@ export const rootSlice = createSlice({
     setActionWallet: (state, action) => {
       state.actionWallet = action.payload;
     },
+    setActionWalletType: (state, action) => {
+      state.actionWalletType = action.payload;
+    },
 
     // notifications
     appendNotification: (state, action) => {
-      state.notifications.push(action.payload);
+      // state.notifications.push(action.payload);
+      state.notifications = [action.payload, ...state.notifications];
     },
     setNotifications: (state, action) => {
       state.notifications = action.payload;
@@ -92,6 +97,7 @@ export const {
   markNotificationAsRead,
   deleteAllNotifications,
   markAllNotificationsAsRead,
+  setActionWalletType,
 } = rootSlice.actions;
 
 export default rootSlice.reducer;

@@ -137,9 +137,7 @@ export default function MyAccount({}) {
                       setAddWalletModalVisible={setAddWalletModalVisible}
                     />
                   ),
-                  1: <Earnings />,
                   2: <AccountNotifications />,
-                  3: <Support />,
                 }[tabIndex]
               }
             </section>
@@ -147,7 +145,7 @@ export default function MyAccount({}) {
         )}
 
         {/* add wallet modal */}
-        <Modal
+        {/* <Modal
           open={addWalletModalVisible}
           centered
           onOk={() => {}}
@@ -182,6 +180,11 @@ export default function MyAccount({}) {
               type="primary"
               loading={addWalletIsLoading}
               onClick={() => {
+                // verify signature
+                if (!newWallet) {
+                  message.error("Please enter wallet address");
+                  return;
+                }
                 addWallet({
                   wallet: newWallet,
                 })
@@ -199,7 +202,7 @@ export default function MyAccount({}) {
               Save
             </Button>
           </div>
-        </Modal>
+        </Modal> */}
       </Container>
     </>
   );

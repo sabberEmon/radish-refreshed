@@ -2,9 +2,13 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { ReactComponent as RadishLogo } from "../../images/radish.svg";
+import { useSubscribeToNewsletterMutation } from "@/redux/features/api/apiSlice";
+import { message } from "antd";
 
 export default function Footer() {
   const router = useRouter();
+  const [subscribeToNewsletter, { isLoading, isError }] =
+    useSubscribeToNewsletterMutation();
 
   const [email, setEmail] = useState("");
 
@@ -113,7 +117,40 @@ export default function Footer() {
             />
             <div
               className="cursor-pointer w-[32px] h-[32px] flex justify-center items-center bg-primary text-white rounded-[100px]"
-              onClick={() => {}}
+              onClick={() => {
+                // verify the email as a valid email
+                if (!email) {
+                  message.error("Email is required");
+                  return;
+                }
+
+                // verify the email address as a valid email address with regex
+                const re = /\S+@\S+\.\S+/;
+                if (!re.test(email)) {
+                  message.error("Invalid email address");
+                  return;
+                }
+
+                message.loading({
+                  content: "Subscribing to newsletter...",
+                  key: "subscribe",
+                });
+
+                subscribeToNewsletter({ email }).then((res) => {
+                  if (res?.data?.success) {
+                    setEmail("");
+                    message.success({
+                      content: "Subscribed to newsletter",
+                      key: "subscribe",
+                    });
+                  } else {
+                    message.info({
+                      content: "Already subscribed to newsletter",
+                      key: "subscribe",
+                    });
+                  }
+                });
+              }}
             >
               <ArrowRightIcon className="w-5 h-5" />
             </div>

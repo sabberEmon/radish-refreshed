@@ -59,7 +59,7 @@ export default function SingleComment({
                 router.push(`/profile/${comment.user._id}`);
               }}
             >
-              {comment.user.name}
+              {comment.user.name || "Guest User"}
             </p>
             <p className="text-sm text-secondaryGray mt-1">{comment.text}</p>
           </div>

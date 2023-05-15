@@ -185,10 +185,10 @@ export default function Nft({ nft, collection, similarNfts, owner }) {
       message: getTransactionMessage(nft),
       encryptMessage: false,
     };
-    if (root.walletType === "z3us") {
+    if (root.actionWalletType === "z3us") {
       const response = await window.z3us.v1.submitTransaction(tx);
       // console.log("wallet response", response);
-    } else if (root.walletType === "xidar") {
+    } else if (root.actionWalletType === "xidar") {
       const response = await window.xidar.v1.submitTransaction(tx);
     }
   };
@@ -220,10 +220,10 @@ export default function Nft({ nft, collection, similarNfts, owner }) {
       message: `List NFT #${nft.referenceId} for ${listForSaleAmount} xrd`,
       encryptMessage: false,
     };
-    if (root.walletType === "z3us") {
+    if (root.actionWalletType === "z3us") {
       const response = await window.z3us.v1.submitTransaction(tx);
       setListForSaleModal(false);
-    } else if (root.walletType === "xidar") {
+    } else if (root.actionWalletType === "xidar") {
       const response = await window.xidar.v1.submitTransaction(tx);
       setListForSaleModal(false);
     }
@@ -257,9 +257,9 @@ export default function Nft({ nft, collection, similarNfts, owner }) {
       encryptMessage: false,
     };
 
-    if (root.walletType === "z3us") {
+    if (root.actionWalletType === "z3us") {
       const response = await window.z3us.v1.submitTransaction(tx);
-    } else if (root.walletType === "xidar") {
+    } else if (root.actionWalletType === "xidar") {
       const response = await window.xidar.v1.submitTransaction(tx);
     }
   };
@@ -300,10 +300,10 @@ export default function Nft({ nft, collection, similarNfts, owner }) {
       encryptMessage: false,
     };
 
-    if (root.walletType === "z3us") {
+    if (root.actionWalletType === "z3us") {
       const response = await window.z3us.v1.submitTransaction(tx);
       setSeeBidsModal(false);
-    } else if (root.walletType === "xidar") {
+    } else if (root.actionWalletType === "xidar") {
       const response = await window.xidar.v1.submitTransaction(tx);
       setSeeBidsModal(false);
     }
@@ -363,7 +363,7 @@ export default function Nft({ nft, collection, similarNfts, owner }) {
       encryptMessage: false,
     };
 
-    if (root.walletType === "z3us") {
+    if (root.actionWalletType === "z3us") {
       const response = await window.z3us.v1.submitTransaction(tx);
 
       if (response && response?.txID) {
@@ -379,7 +379,7 @@ export default function Nft({ nft, collection, similarNfts, owner }) {
           }
         });
       }
-    } else if (root.walletType === "xidar") {
+    } else if (root.actionWalletType === "xidar") {
       const response = await window.xidar.v1.submitTransaction(tx);
 
       if (response && response?.txID) {
@@ -426,9 +426,9 @@ export default function Nft({ nft, collection, similarNfts, owner }) {
       encryptMessage: false,
     };
 
-    if (root.walletType === "z3us") {
+    if (root.actionWalletType === "z3us") {
       const response = await window.z3us.v1.submitTransaction(tx);
-    } else if (root.walletType === "xidar") {
+    } else if (root.actionWalletType === "xidar") {
       const response = await window.xidar.v1.submitTransaction(tx);
     }
   };
@@ -461,7 +461,7 @@ export default function Nft({ nft, collection, similarNfts, owner }) {
       encryptMessage: false,
     };
 
-    if (root.walletType === "z3us") {
+    if (root.actionWalletType === "z3us") {
       const response = await window.z3us.v1.submitTransaction(tx);
 
       if (response && response?.txID) {
@@ -477,7 +477,7 @@ export default function Nft({ nft, collection, similarNfts, owner }) {
           },
         });
       }
-    } else if (root.walletType === "xidar") {
+    } else if (root.actionWalletType === "xidar") {
       const response = await window.xidar.v1.submitTransaction(tx);
 
       if (response && response?.txID) {
@@ -1307,7 +1307,7 @@ export default function Nft({ nft, collection, similarNfts, owner }) {
                       encryptMessage: false,
                     };
 
-                    if (root.walletType === "z3us") {
+                    if (root.actionWalletType === "z3us") {
                       const response = await window.z3us.v1.submitTransaction(
                         tx
                       );
@@ -1325,7 +1325,7 @@ export default function Nft({ nft, collection, similarNfts, owner }) {
                           },
                         });
                       }
-                    } else if (root.walletType === "xidar") {
+                    } else if (root.actionWalletType === "xidar") {
                       const response = await window.xidar.v1.submitTransaction(
                         tx
                       );
@@ -1459,7 +1459,7 @@ export default function Nft({ nft, collection, similarNfts, owner }) {
                       encryptMessage: false,
                     };
 
-                    if (root.walletType === "z3us") {
+                    if (root.actionWalletType === "z3us") {
                       const response = await window.z3us.v1.submitTransaction(
                         tx
                       );
@@ -1478,7 +1478,7 @@ export default function Nft({ nft, collection, similarNfts, owner }) {
 
                         setBidHigherModal(false);
                       }
-                    } else if (root.walletType === "xidar") {
+                    } else if (root.actionWalletType === "xidar") {
                       const response = await window.xidar.v1.submitTransaction(
                         tx
                       );

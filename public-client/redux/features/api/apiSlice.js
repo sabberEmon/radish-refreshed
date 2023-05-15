@@ -134,6 +134,15 @@ export const apiSlice = createApi({
         body,
       }),
     }),
+
+    // Etc
+    subscribeToNewsletter: builder.mutation({
+      query: (body) => ({
+        url: "/api/index/subscribe",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -153,4 +162,5 @@ export const {
   useGetCommentsQuery,
   useGetUsernamesQuery,
   useLikeCommentMutation,
+  useSubscribeToNewsletterMutation,
 } = apiSlice;

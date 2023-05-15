@@ -1,7 +1,7 @@
 import { Button, Drawer } from "antd";
 import { useEffect, useState } from "react";
 import { BsFilter } from "react-icons/bs";
-import { MdClose, MdOutlineSearch } from "react-icons/md";
+import { MdClear, MdClose, MdOutlineSearch } from "react-icons/md";
 import CollectionListNfts from "./CollectionListNfts";
 import Filters from "./Filters";
 import Select from "../utils/Select";
@@ -177,7 +177,7 @@ function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
             <MdOutlineSearch className="w-5 h-5 text-secondaryGray dark:text-secondaryDarkGray" />
             <input
               placeholder="Search in collection"
-              className="flex flex-grow border-none outline-none h-full placeholder:font-normal px-2 font-normal"
+              className="flex w-full border-none outline-none h-full placeholder:font-normal px-2 font-normal"
               style={{
                 backgroundColor: "transparent",
               }}
@@ -242,7 +242,33 @@ function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
         </div>
       </div>
 
-      <div className="mt-10 min-h-[50vh] md:flex md:gap-x-6">
+      <div className="my-3 mt-4">
+        {collection.filters.length > 0 && (
+          <div className="lg:flex flex-wrap items-center gap-x-2 gap-y-2 hidden">
+            {collection.filters.map((filter) => {
+              return (
+                <div
+                  className="px-3 py-2 h-[38px] text-sm rounded-[40px] border border-[#CFDBD599] border-solid text-secondaryGray font-bold flex items-center"
+                  key={filter.trait_type}
+                >
+                  {filter.trait_type} : {filter.values.join(", ")}
+                  <MdClear
+                    className="text-secondaryGray text-lg ml-1 cursor-pointer"
+                    onClick={() => {
+                      dispatch({
+                        type: "collection/removeFilter",
+                        payload: filter,
+                      }); // remove filter
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <div className="mt-6 min-h-[50vh] md:flex md:gap-x-6">
         {/* filters */}
         {collection.isFiltersOpen && (
           <Filters possibleTraitTypes={possibleTraitTypes} />

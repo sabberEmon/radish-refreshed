@@ -9,6 +9,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import WalletNumber from "../utils/WalletNumber";
 import {
+  useAddWalletMutation,
   useDeleteWalletMutation,
   useEditProfileMutation,
 } from "@/redux/features/api/apiSlice";
@@ -26,6 +27,7 @@ export default function ProfileSettings({ user, setAddWalletModalVisible }) {
     useState(false);
   const [bannerPictureUpdateLoading, setBannerPictureUpdateLoading] =
     useState(false);
+  const [addWallet, { isLoading: addWalletIsLoading }] = useAddWalletMutation();
 
   const profilePicInputRef = useRef(null);
   const bannerPicInputRef = useRef(null);
@@ -100,6 +102,36 @@ export default function ProfileSettings({ user, setAddWalletModalVisible }) {
     },
   ];
 
+  const addWalletHandler = async () => {
+    if (!root.actionWallet) {
+      message.info("Please connect the wallet you want to add to your account");
+      return;
+    }
+
+    if (root.actionWalletType === "z3us") {
+      await window.z3us.v1.connect();
+      await window.z3us.v1.sign("Login to RadishSquare");
+    }
+
+    if (root.actionWalletType === "xidar") {
+      await window.xidar.v1.connect();
+      await window.xidar.v1.sign("Login to RadishSquare");
+    }
+
+    addWallet({
+      wallet: root.actionWallet,
+    })
+      .unwrap()
+      .then((res) => {
+        message.success("Wallet added successfully");
+        // setAddWalletModalVisible(false);
+        // setNewWallet("");
+      })
+      .catch((err) => {
+        message.error(err.data?.message || "Something went wrong");
+      });
+  };
+
   // update profile handler
   const updateProfileHandler = (data) => {
     message.loading({
@@ -156,9 +188,8 @@ export default function ProfileSettings({ user, setAddWalletModalVisible }) {
           <Button
             className="w-full rounded-[24px] h-[46px] font-bold mt-10"
             type="primary"
-            onClick={() => {
-              setAddWalletModalVisible(true);
-            }}
+            onClick={addWalletHandler}
+            loading={addWalletIsLoading}
           >
             Add Wallet
           </Button>
@@ -171,12 +202,39 @@ export default function ProfileSettings({ user, setAddWalletModalVisible }) {
 
             let data = {};
 
+            // check if tghe url is telegram valid url
+            if (e.target.telegram.value) {
+              const url = new URL(e.target.telegram.value);
+              if (
+                url.hostname !== "telegram.org" &&
+                url.hostname !== "t.me" &&
+                url.hostname !== "web.telegram.org"
+              ) {
+                return message.error("Invalid telegram url");
+              }
+            }
+
+            // check if tghe url is twitter valid url
+            if (e.target.twitter.value) {
+              const url = new URL(e.target.twitter.value);
+              if (url.hostname !== "twitter.com") {
+                return message.error("Invalid twitter url");
+              }
+            }
+
             if (e.target.name.value) {
               data.name = e.target.name.value;
             }
 
             if (e.target.bio.value) {
               data.bio = e.target.bio.value;
+            }
+
+            if (e.target.telegram.value) {
+              data.telegram = e.target.telegram.value;
+            }
+            if (e.target.twitter.value) {
+              data.twitter = e.target.twitter.value;
             }
 
             // console.log(data);
@@ -219,58 +277,7 @@ export default function ProfileSettings({ user, setAddWalletModalVisible }) {
             />
           </div>
 
-          <Button
-            className="w-full rounded-[24px] h-[46px] font-bold mt-10"
-            type="primary"
-            htmlType="submit"
-            disabled={editProfileLoading}
-          >
-            Save Changes
-          </Button>
-        </form>
-
-        {/* social form */}
-        <form
-          className="max-w-full lg:max-w-[470px] mt-16"
-          onSubmit={(e) => {
-            e.preventDefault();
-            // console.log(e.target.telegram.value);
-            // console.log(e.target.twitter.value);
-
-            // check if tghe url is telegram valid url
-            if (e.target.telegram.value) {
-              const url = new URL(e.target.telegram.value);
-              if (
-                url.hostname !== "telegram.org" &&
-                url.hostname !== "t.me" &&
-                url.hostname !== "web.telegram.org"
-              ) {
-                return message.error("Invalid telegram url");
-              }
-            }
-
-            // check if tghe url is twitter valid url
-            if (e.target.twitter.value) {
-              const url = new URL(e.target.twitter.value);
-              if (url.hostname !== "twitter.com") {
-                return message.error("Invalid twitter url");
-              }
-            }
-
-            let data = {};
-
-            if (e.target.telegram.value) {
-              data.telegram = e.target.telegram.value;
-            }
-            if (e.target.twitter.value) {
-              data.twitter = e.target.twitter.value;
-            }
-
-            // console.log(data);
-            updateProfileHandler(data);
-          }}
-        >
-          <div className="w-full">
+          <div className="w-full mt-3">
             <label htmlFor="telegram" className=" block text-sm">
               Telegram
             </label>
@@ -307,10 +314,10 @@ export default function ProfileSettings({ user, setAddWalletModalVisible }) {
           <Button
             className="w-full rounded-[24px] h-[46px] font-bold mt-10"
             type="primary"
-            disabled={editProfileLoading}
             htmlType="submit"
+            disabled={editProfileLoading}
           >
-            Update Social
+            Save Changes
           </Button>
         </form>
       </div>

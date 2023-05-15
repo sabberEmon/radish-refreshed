@@ -57,6 +57,18 @@ const collectionSlice = createSlice({
     setPage: (state, action) => {
       state.page = action.payload;
     },
+    removeFilter: (state, action) => {
+      const tempFilters = [...state.filters];
+      const targetedFilter = tempFilters.find(
+        (f) => f.trait_type === action.payload.trait_type
+      );
+
+      if (targetedFilter) {
+        tempFilters.splice(tempFilters.indexOf(targetedFilter), 1);
+      }
+
+      state.filters = tempFilters;
+    },
   },
 });
 
@@ -67,6 +79,7 @@ export const {
   incrementPage,
   setIsFiltersOpen,
   setPage,
+  removeFilter,
 } = collectionSlice.actions;
 
 export default collectionSlice.reducer;

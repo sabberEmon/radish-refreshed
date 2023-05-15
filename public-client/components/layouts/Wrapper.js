@@ -48,7 +48,7 @@ export default function Wrapper({ children }) {
     root.socket.on("show-new-individual-notification", (newNotification) => {
       // console.log("newNotification", newNotification);
       dispatch({
-        type: "root/addNotification",
+        type: "root/appendNotification",
         payload: newNotification,
       });
     });
