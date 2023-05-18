@@ -43,6 +43,7 @@ export const apiSlice = createApi({
           dispatch({ type: "root/setUser", payload: result.data.data });
         }
       },
+      providesTags: ["User"],
     }),
     getUserAccount: builder.query({
       query: () => "/api/user/my-account",

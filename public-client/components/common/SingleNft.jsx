@@ -286,7 +286,7 @@ function SingleNft({ nft }) {
                       <span className="text-xs text-[#9CA4AB] ">Ends in</span>
                       <Statistic.Countdown
                         // value={new Date().getTime()}
-                        value={Date.now() + 1000 * 60 * 60 * 24 * 2 + 1000 * 30}
+                        value={new Date(nft?.endDate).getTime()}
                         format="DD:HH:mm:ss"
                         onFinish={() => {
                           console.log("finished!");

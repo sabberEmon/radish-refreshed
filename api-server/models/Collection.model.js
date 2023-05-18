@@ -68,6 +68,9 @@ const collectionSchema = new mongoose.Schema(
       type: String,
       default: "Random",
     },
+    collectionRRI: {
+      type: String,
+    },
     possibleTraitTypes: {
       type: Array,
       default: [],

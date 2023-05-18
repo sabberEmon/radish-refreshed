@@ -4,8 +4,8 @@ const userSchema = new mongoose.Schema(
   {
     uuid: {
       type: String,
-      required: true,
-      unique: true,
+      // required: true,
+      // unique: true,
     },
     primaryWallet: {
       type: String,

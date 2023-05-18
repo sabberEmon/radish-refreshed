@@ -34,7 +34,7 @@ function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
     value: "availableToBuy",
   });
 
-  console.log(search);
+  // console.log(search);
 
   const fetchMoreData = async (page, filters) => {
     let primaryFilters = {
@@ -85,7 +85,7 @@ function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
 
         break;
       case "onAuction":
-        primaryFilters.auction = true;
+        primaryFilters.onAuction = true;
         break;
       case "onSale":
         primaryFilters.forSale = true;
@@ -113,6 +113,10 @@ function CollectionMain({ possibleTraitTypes, collectionIdentifier }) {
     dispatch({
       type: "collection/apendNfts",
       payload: res.data?.nfts,
+    });
+    dispatch({
+      type: "collection/setHasMore",
+      payload: res.data?.hasMore,
     });
     setLoading(false);
   };

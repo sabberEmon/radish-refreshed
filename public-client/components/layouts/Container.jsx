@@ -42,23 +42,26 @@ function Container({ children, includesFooter = true }) {
   const loginHandler = async (walletType) => {
     let walletAddress = "";
     let signedMessage = "";
+    let wType = "";
 
     // xidar
     if (walletType === "xidar") {
       if (!window.xidar) {
-        message.error("XIDAR wallet not found");
+        return message.error("XIDAR wallet not found");
       }
       walletAddress = await window.xidar.v1.connect();
       signedMessage = await window.xidar.v1.sign("Login to RadishSquare");
+      wType = "xidar";
     }
 
     // z3us
     if (walletType === "z3us") {
       if (!window.z3us) {
-        message.error("Z3US wallet not found");
+        return message.error("Z3US wallet not found");
       }
       walletAddress = await window.z3us.v1.connect();
       signedMessage = await window.z3us.v1.sign("Login to RadishSquare");
+      wType = "z3us";
     }
 
     try {
@@ -80,6 +83,14 @@ function Container({ children, includesFooter = true }) {
         dispatch({
           type: "root/setUser",
           payload: res.data.data,
+        });
+        dispatch({
+          type: "root/setActionWallet",
+          payload: walletAddress,
+        });
+        dispatch({
+          type: "root/setActionWalletType",
+          payload: wType,
         });
 
         localStorage.setItem("radish_auth_token", res.data.token);

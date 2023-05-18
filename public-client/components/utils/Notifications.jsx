@@ -15,7 +15,7 @@ export default function Notifications({
 
   return (
     <div
-      className=" relative rounded-[16px] min-h-[400px] w-[285px] bg-white dark:bg-secondaryBlack border border-solid border-gray-200  pt-4"
+      className=" relative rounded-[16px] min-h-[400px] w-[285px] bg-white dark:bg-secondaryBlack border border-solid border-gray-200  pt-4 pb-4"
       style={{
         boxShadow: "4px 4px 12px rgba(3, 14, 23, 0.06)",
       }}
@@ -59,7 +59,7 @@ export default function Notifications({
           )
         }
         {notifications?.length > 0 &&
-          notifications.slice(0, 5).map((notification) => {
+          notifications.slice(0, 4).map((notification) => {
             return (
               <div
                 key={notification._id}
@@ -107,7 +107,7 @@ export default function Notifications({
             );
           })}
 
-        {notifications?.length > 5 && (
+        {notifications?.length > 4 && (
           <div
             className=" absolute mt-4 bottom-3 text-sm font-extrabold text-center flex justify-center items-center cursor-pointer text-primary h-[30px] w-full rounded-[12px]"
             onClick={() => {

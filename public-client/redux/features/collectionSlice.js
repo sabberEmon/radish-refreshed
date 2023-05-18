@@ -5,8 +5,9 @@ const collectionSlice = createSlice({
   initialState: {
     nfts: [],
     filters: [],
-    page: 1,
     isFiltersOpen: false,
+    page: 1,
+    hasMore: true,
   },
   reducers: {
     setNfts: (state, action) => {
@@ -69,6 +70,9 @@ const collectionSlice = createSlice({
 
       state.filters = tempFilters;
     },
+    setHasMore: (state, action) => {
+      state.hasMore = action.payload;
+    },
   },
 });
 
@@ -80,6 +84,7 @@ export const {
   setIsFiltersOpen,
   setPage,
   removeFilter,
+  setHasMore,
 } = collectionSlice.actions;
 
 export default collectionSlice.reducer;

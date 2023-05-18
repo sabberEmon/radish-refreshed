@@ -164,6 +164,7 @@ export default function Nft({ nft, collection, similarNfts, owner }) {
       message.error("This NFT is not listed for sale");
       return;
     }
+
     const tx = {
       actions: [
         {

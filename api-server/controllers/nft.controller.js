@@ -106,7 +106,7 @@ exports.getForSaleNfts = async (req, res) => {
         path: "parentCollection",
         select: ["collectionWallet", "title", "collectionIdentifier"],
       })
-      .limit(8);
+      .limit(20);
 
     res.status(200).json({
       success: true,

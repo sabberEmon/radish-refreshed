@@ -435,14 +435,6 @@ export default function Navbar() {
           >
             Explore
           </p>
-          <p
-            onClick={() => {
-              router.push("/swap");
-            }}
-            className="font-bold text-secondaryGray"
-          >
-            Swap
-          </p>
           <div className="flex items-center justify-between">
             {root.isNotificationOpen ? (
               <NotificationActiveIcon

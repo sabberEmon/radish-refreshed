@@ -64,11 +64,23 @@ exports.handleLogin = async (req, res) => {
     const existingUser = await User.findOne({ primaryWallet });
 
     if (existingUser) {
-      if (existingUser.signedMessage !== signedMessage) {
-        return res.status(404).json({
-          success: false,
-          message: "Invalid signature",
-        });
+      // check if the user has any signed message
+      if (!existingUser.uuid) {
+        existingUser.uuid = uuidv4();
+        existingUser.signedMessage = signedMessage;
+        existingUser.wallets = [primaryWallet];
+
+        await existingUser.save();
+      } else {
+        if (
+          existingUser.signedMessage &&
+          existingUser.signedMessage !== signedMessage
+        ) {
+          return res.status(404).json({
+            success: false,
+            message: "Invalid signature",
+          });
+        }
       }
 
       // jwt

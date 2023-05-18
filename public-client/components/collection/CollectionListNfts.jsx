@@ -53,17 +53,19 @@ export default function CollectionListNfts({ infinityRef, loading }) {
           <SingleNft nft={nft} />
         </div>
       ))}
-      <div
-        ref={infinityRef}
-        className={`w-full my-8 flex justify-center items-center
+      {collection.hasMore && (
+        <div
+          ref={infinityRef}
+          className={`w-full my-8 flex justify-center items-center
         ${collection.isFiltersOpen ? "col-span-full" : "col-span-full"}
         `}
-      >
-        <Spin
-          indicator={<LoadingOutlined style={{ fontSize: 35 }} spin />}
-          className="mx-auto inline-block"
-        />
-      </div>
+        >
+          <Spin
+            indicator={<LoadingOutlined style={{ fontSize: 35 }} spin />}
+            className="mx-auto inline-block"
+          />
+        </div>
+      )}
     </div>
   );
 }

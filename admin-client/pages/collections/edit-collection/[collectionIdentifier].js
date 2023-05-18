@@ -126,13 +126,23 @@ export default function EditCollection({ collection }) {
               />
             </div>
             <div className="flex flex-col space-y-2">
-              <label htmlFor="buyType">Buy Type</label>
+              <label htmlFor="nickname">Nickname</label>
               <Input
-                id="buyType"
+                id="nickname"
                 type="text"
-                name="buyType"
+                name="nickname"
                 placeholder=""
-                defaultValue={collection.buyType}
+                defaultValue={collection.nickname}
+              />
+            </div>
+            <div className="flex flex-col space-y-2">
+              <label htmlFor="buyType">Collection RRI</label>
+              <Input
+                id="collectionRRI"
+                type="text"
+                name="collectionRRI"
+                placeholder=""
+                defaultValue={collection.collectionRRI}
               />
             </div>
 

@@ -5,7 +5,7 @@ import Image from "next/image";
 import WalletNumber from "@/components/utils/WalletNumber";
 import { abbreviateNumber } from "@/lib/utils";
 import { IoShuffle } from "react-icons/io5";
-import { Button, Input, InputNumber, Modal } from "antd";
+import { Button, Input, InputNumber, Modal, message } from "antd";
 import { MdOutlineShare } from "react-icons/md";
 import CollectionMain from "@/components/collection/CollectionMain";
 import axios from "axios";
@@ -15,16 +15,28 @@ import { ReactComponent as TelegramIcon } from "../../images/telegram.svg";
 import telegramLogo from "../../images/profile/telegram-logo.png";
 import currency from "../../images/Diamond_Shape.png";
 import { useState } from "react";
+import BigNumber from "bignumber.js";
+import { useSelector } from "react-redux";
+
+const safelyUnwrapAmount = (amount) => {
+  const bigAmount = new BigNumber(amount);
+  const amountInput = bigAmount.shiftedBy(18); // Atto
+  const amountResult = amountInput.toFixed();
+
+  return amountResult;
+};
 
 export default function Collection({ collection }) {
   // console.log(collection);
   const router = useRouter();
+  const root = useSelector((state) => state.main.root);
 
   const { collectionIdentifier } = router.query;
 
   // console.log(collectionIdentifier);
 
   const [randomBuyModalOpen, setRandomBuyModalOpen] = useState(false);
+  const [amountToBuy, setAmountToBuy] = useState(2);
 
   return (
     <>
@@ -262,10 +274,14 @@ export default function Collection({ collection }) {
               <p className="font-extrabold  w-[80%]">Choose amount</p>
               <InputNumber
                 bordered={false}
-                min={1}
+                min={2}
                 max={collection.nonMintedNftsCount}
                 size="large"
-                defaultValue={1}
+                value={amountToBuy}
+                onChange={(value) => {
+                  setAmountToBuy(value);
+                }}
+                // defaultValue={1}
                 style={{
                   borderRadius: "24px",
                 }}
@@ -301,6 +317,49 @@ export default function Collection({ collection }) {
               <Button
                 type="primary"
                 className="w-[160px] h-[42px] rounded-[12px] font-extrabold"
+                onClick={async () => {
+                  if (!root.actionWallet) {
+                    message.error("Please connect your wallet");
+                    return;
+                  }
+                  // if (collection.buyType !== "random") {
+                  //   message.error(
+                  //     "This collection doesn't have a radom buytype"
+                  //   );
+                  // }
+
+                  const tx = {
+                    actions: [
+                      {
+                        type: "TransferTokens",
+                        from_account: {
+                          address: root.actionWallet,
+                        },
+                        to_account: {
+                          address: collection.collectionWallet,
+                        },
+                        amount: {
+                          token_identifier: {
+                            rri: collection.collectionRRI || "xrd_rr1qy5wfsfh",
+                          },
+                          value: safelyUnwrapAmount(
+                            collection.floorPrice * amountToBuy
+                          ),
+                        },
+                      },
+                    ],
+                    message: "random",
+                    encryptMessage: false,
+                  };
+                  if (root.actionWalletType === "z3us") {
+                    const response = await window.z3us.v1.submitTransaction(tx);
+                    // console.log("wallet response", response);
+                  } else if (root.actionWalletType === "xidar") {
+                    const response = await window.xidar.v1.submitTransaction(
+                      tx
+                    );
+                  }
+                }}
               >
                 Buy
               </Button>
